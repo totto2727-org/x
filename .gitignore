@@ -1,4 +1,6 @@
 _build/
+.direnv/
+.omo/
 src/**/pkg.generated.mbti
 .DS_Store
 .direnv/
