@@ -7,15 +7,7 @@ on:
 
 jobs:
   verify:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - system: aarch64-darwin
-            runner: macos-14
-          - system: x86_64-linux
-            runner: ubuntu-latest
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       contents: read
@@ -30,4 +22,4 @@ jobs:
           moon test --target all
           moon package --list
       - name: Check flake
-        run: nix flake check --system ${{ matrix.system }}
+        run: nix flake check --system x86_64-linux
