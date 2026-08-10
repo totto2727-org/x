@@ -1,6 +1,8 @@
-# totto2727/copy
+# totto2727/x
 
 An explicit copy trait for MoonBit values.
+
+Copy is provided by the `totto2727/x/copy` package.
 
 MoonBit does not move values when they are passed to a function, so this package is not a marker for Rust-style move semantics. `Copy::copy` instead creates an independent logical copy. Composite implementations recursively copy their contents, while immutable storage may be shared when it cannot expose mutation.
 
