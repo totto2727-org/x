@@ -1,8 +1,10 @@
 # totto2727/x
 
-An explicit copy trait for MoonBit values.
+Focused utility traits and value types for MoonBit.
 
 Copy is provided by the `totto2727/x/copy` package.
+
+Typed absolute and relative filesystem paths are provided by the `totto2727/x/path` package.
 
 MoonBit does not move values when they are passed to a function, so this package is not a marker for Rust-style move semantics. `Copy::copy` instead creates an independent logical copy. Composite implementations recursively copy their contents, while immutable storage may be shared when it cannot expose mutation.
 
@@ -46,3 +48,16 @@ test {
 ```
 
 MoonBit's trait syntax and generic trait bounds are documented in the [official Method and Trait reference](https://docs.moonbitlang.com/en/latest/language/methods.html).
+
+## Typed paths
+
+`AbsolutePath` and `RelativePath` normalize `moonbitlang/x/path.Path` values and validate their path form at construction. Their inner `Path` remains available through the public readonly `path` field.
+
+```mbt check
+let root = @typed_path.AbsolutePath(@path.Path("/workspace/./project"))
+let source = @typed_path.RelativePath(@path.Path("src/../README.md"))
+let readme = @typed_path.Path::join(root, source)
+println(@typed_path.Path::to_string(readme))
+```
+
+Both types encode to a JSON string and decode through their validating constructors.
