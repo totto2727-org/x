@@ -15,6 +15,12 @@ test "AbsolutePath::AbsolutePath - normalizes an absolute path" {
 }
 
 ///|
+test "AbsolutePath::from_string - normalizes an absolute path" {
+  let path = @path.AbsolutePath::from_string("/workspace/./project")
+  inspect(path.path.to_string(), content="/workspace/project")
+}
+
+///|
 test "panic_AbsolutePath::AbsolutePath - rejects a relative path" {
   try! (@path.AbsolutePath(@moon_path.Path("workspace/project")) |> ignore)
 }
@@ -48,6 +54,14 @@ test "panic_AbsolutePath FromJson - rejects a relative path" {
 test "RelativePath::RelativePath - normalizes a relative path" {
   let path = @path.RelativePath(@moon_path.Path("src/./domain/../path.mbt"))
   inspect(path.path.to_string(), content="src/path.mbt")
+}
+
+///|
+test "RelativePath::from_string - supports chained joins" {
+  let path = @path.RelativePath::from_string("./")
+    |> @path.RelativePath::join(@path.RelativePath::from_string("s"))
+    |> @path.RelativePath::join(@path.RelativePath::from_string("d"))
+  inspect(path.path.to_string(), content="s/d")
 }
 
 ///|

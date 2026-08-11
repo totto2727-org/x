@@ -4,6 +4,7 @@
 /// `join` accepts a relative path so implementations can preserve their path
 /// form without revalidating the result.
 pub(open) trait Path {
+  fn from_string(String) -> Self raise
   fn to_string(Self) -> String
   fn join(Self, RelativePath) -> Self
 }
@@ -20,6 +21,11 @@ pub fn AbsolutePath::AbsolutePath(path : @moon_path.Path) -> AbsolutePath raise 
   let normalized = path.normalize()
   guard normalized.is_absolute() else { fail("absolute path required") }
   { path: normalized }
+}
+
+///|
+pub impl Path for AbsolutePath with fn from_string(value) {
+  AbsolutePath::AbsolutePath(@moon_path.Path(value))
 }
 
 ///|
@@ -42,7 +48,7 @@ pub impl ToJson for AbsolutePath with fn to_json(self) {
 ///|
 pub impl @json.FromJson for AbsolutePath with fn from_json(json, path) {
   let value : String = @json.from_json(json, path~)
-  AbsolutePath::AbsolutePath(@moon_path.Path(value)) catch {
+  AbsolutePath::from_string(value) catch {
     _ => raise @json.JsonDecodeError((path, "absolute path required"))
   }
 }
@@ -59,6 +65,11 @@ pub fn RelativePath::RelativePath(path : @moon_path.Path) -> RelativePath raise 
   let normalized = path.normalize()
   guard !normalized.is_absolute() else { fail("relative path required") }
   { path: normalized }
+}
+
+///|
+pub impl Path for RelativePath with fn from_string(value) {
+  RelativePath::RelativePath(@moon_path.Path(value))
 }
 
 ///|
@@ -81,7 +92,7 @@ pub impl ToJson for RelativePath with fn to_json(self) {
 ///|
 pub impl @json.FromJson for RelativePath with fn from_json(json, path) {
   let value : String = @json.from_json(json, path~)
-  RelativePath::RelativePath(@moon_path.Path(value)) catch {
+  RelativePath::from_string(value) catch {
     _ => raise @json.JsonDecodeError((path, "relative path required"))
   }
 }
