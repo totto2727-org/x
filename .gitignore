@@ -1,4 +1,5 @@
 _build/
+.mooncakes/
 .direnv/
 .omo/
 src/**/pkg.generated.mbti

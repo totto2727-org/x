@@ -1,5 +1,5 @@
 {
-  description = "The grouped MoonBit module containing the Copy trait";
+  description = "Focused utility traits and value types for MoonBit";
 
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
