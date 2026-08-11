@@ -29,6 +29,8 @@ pub impl Path for AbsolutePath with fn to_string(self) {
 
 ///|
 pub impl Path for AbsolutePath with fn join(self, relative) {
+  // The underlying join normalizes the result. A RelativePath operand preserves
+  // the absolute form, so rerunning the raising constructor is unnecessary.
   AbsolutePath::{ path: self.path.join(relative.path) }
 }
 
@@ -66,6 +68,8 @@ pub impl Path for RelativePath with fn to_string(self) {
 
 ///|
 pub impl Path for RelativePath with fn join(self, relative) {
+  // The underlying join normalizes the result. A RelativePath operand preserves
+  // the relative form, so rerunning the raising constructor is unnecessary.
   RelativePath::{ path: self.path.join(relative.path) }
 }
 
