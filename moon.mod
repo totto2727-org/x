@@ -4,6 +4,8 @@ version = "0.3.0"
 
 import {
   "moonbitlang/x@0.4.47",
+  "moonbit-community/yaml@0.0.6",
+  "bobzhang/toml@0.4.2",
 }
 
 readme = "README.mbt.md"
