@@ -53,6 +53,8 @@ pub impl @json.FromJson for Yaml with fn from_json(json, path) {
     Json::False => Yaml::Yaml(@upstream_yaml.Yaml::Boolean(false))
     Json::String(value) => Yaml::Yaml(@upstream_yaml.Yaml::String(value))
     Json::Number(value, repr~) => {
+      // `Json::number(@double.not_a_number)` can construct `Number(NaN)`, so
+      // the `Json::Number` variant alone does not guarantee a finite value.
       if value.is_nan() ||
         value == @double.infinity ||
         value == @double.neg_infinity {

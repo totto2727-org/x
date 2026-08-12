@@ -62,6 +62,8 @@ pub impl @json.FromJson for TomlValue with fn from_json(json, path) {
     Json::String(value) =>
       TomlValue::TomlValue(@upstream_toml.TomlString(value))
     Json::Number(value, repr~) => {
+      // `Json::number(@double.not_a_number)` can construct `Number(NaN)`, so
+      // the `Json::Number` variant alone does not guarantee a finite value.
       if value.is_nan() ||
         value == @double.infinity ||
         value == @double.neg_infinity {
