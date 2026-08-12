@@ -86,8 +86,8 @@ test "flatten - round-trips an empty root object" {
   let source = Json::empty_object()
   let pointer = @json.flatten(source, JsonPointer)
   let javascript = @json.flatten(source, JavaScript)
-  assert_eq(pointer, { "": Json::empty_object() })
-  assert_eq(javascript, { "": Json::empty_object() })
+  assert_true(pointer.is_empty())
+  assert_true(javascript.is_empty())
   assert_eq(@json.from_flatten_json(pointer, JsonPointer), source)
   assert_eq(@json.from_flatten_json(javascript, JavaScript), source)
 }

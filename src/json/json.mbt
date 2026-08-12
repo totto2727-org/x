@@ -52,7 +52,7 @@ fn flatten_value(
   flattened : Map[String, Json],
 ) -> Unit raise FlattenJsonError {
   match value {
-    Json::Object(object) if object.is_empty() =>
+    Json::Object(object) if object.is_empty() && !path.is_empty() =>
       flattened[checked_path(path, format)] = value
     Json::Object(object) =>
       for key, child in object {
