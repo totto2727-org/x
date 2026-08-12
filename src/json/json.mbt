@@ -32,9 +32,9 @@ priv enum BuildNode {
 /// Objects and non-empty arrays are traversed recursively. Primitive values and
 /// empty arrays remain `Json` leaves. A nested empty object cannot be represented
 /// without using an object-valued leaf, so it is rejected. JSON Pointer also
-/// rejects numeric object keys because RFC 6901 cannot distinguish them from
-/// array indices during reconstruction; JavaScript paths preserve them as
-/// bracket-quoted keys.
+/// rejects object keys matching RFC 6901 array-index syntax because they cannot
+/// be distinguished from array indices during reconstruction; JavaScript paths
+/// preserve them as bracket-quoted keys.
 pub fn flatten(
   json : Json,
   format : PathFormat,
