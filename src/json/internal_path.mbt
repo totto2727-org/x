@@ -5,6 +5,12 @@ priv enum PathSegment {
 }
 
 ///|
+let max_path_length_ = 16384
+
+///|
+let max_path_segments_ = 256
+
+///|
 fn format_path_(segments : Array[PathSegment], format : PathFormat) -> String {
   match format {
     JsonPointer => format_json_pointer_(segments)
@@ -17,10 +23,13 @@ fn parse_path_(
   path : String,
   format : PathFormat,
 ) -> Array[PathSegment] raise FlattenJsonError {
-  match format {
+  guard path.length() <= max_path_length_ else { raise InvalidPath(path) }
+  let segments = match format {
     JsonPointer => parse_json_pointer_(path)
     JavaScript => parse_javascript_path_(path)
   }
+  guard segments.length() <= max_path_segments_ else { raise InvalidPath(path) }
+  segments
 }
 
 ///|
@@ -232,7 +241,9 @@ fn parse_bracket_segment_(
   guard index < chars.length() && chars[index] == ']' else {
     raise InvalidPath(path)
   }
-  let value = try @string.parse_int(number.to_string()) catch {
+  let token = number.to_string()
+  guard is_pointer_index_token_(token) else { raise InvalidPath(path) }
+  let value = try @string.parse_int(token) catch {
     _ => raise InvalidPath(path)
   } noraise {
     value => value

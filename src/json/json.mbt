@@ -75,6 +75,8 @@ fn flatten_value_(
 ///
 /// `format` must match the format passed to `flatten`. Object values are
 /// rejected because objects must be represented by their flattened children.
+/// Paths longer than 16,384 characters or deeper than 256 segments are rejected
+/// to keep reconstruction within a bounded typed-error boundary.
 pub fn from_flatten_json(
   flattened : Map[String, Json],
   format : PathFormat,

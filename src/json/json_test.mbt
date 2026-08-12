@@ -145,3 +145,47 @@ test "JavaScript paths - rejects a bracket segment after dot" {
     }
   }
 }
+
+///|
+test "JavaScript paths - rejects non-canonical array indices" {
+  for path in ["users[+0]", "users[0x0]", "users[0_0]", "users[01]"] {
+    let flattened : Map[String, Json] = Map([])
+    flattened[path] = "value"
+    try @json.from_flatten_json(flattened, JavaScript) catch {
+      @json.InvalidPath(invalid_path) => assert_eq(invalid_path, path)
+      _ => fail("unexpected flatten JSON error")
+    } noraise {
+      _ => fail("expected invalid path rejection")
+    }
+  }
+}
+
+///|
+test "from_flatten_json - rejects excessive path depth" {
+  let segments : Array[String] = []
+  for index = 0; index < 257; index = index + 1 {
+    segments.push("k\{index}")
+  }
+  let path = segments.join(".")
+  let flattened : Map[String, Json] = Map([])
+  flattened[path] = "value"
+  try @json.from_flatten_json(flattened, JavaScript) catch {
+    @json.InvalidPath(invalid_path) => assert_eq(invalid_path, path)
+    _ => fail("unexpected flatten JSON error")
+  } noraise {
+    _ => fail("expected invalid path rejection")
+  }
+}
+
+///|
+test "from_flatten_json - rejects excessive path length" {
+  let path = "k".repeat(16385)
+  let flattened : Map[String, Json] = Map([])
+  flattened[path] = "value"
+  try @json.from_flatten_json(flattened, JavaScript) catch {
+    @json.InvalidPath(invalid_path) => assert_eq(invalid_path, path)
+    _ => fail("unexpected flatten JSON error")
+  } noraise {
+    _ => fail("expected invalid path rejection")
+  }
+}
