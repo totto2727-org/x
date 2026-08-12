@@ -83,32 +83,43 @@ test "from_flatten_json - rejects array index gaps" {
 
 ///|
 test "flatten - round-trips an empty root object" {
-  let flattened = @json.flatten(Json::empty_object(), JsonPointer)
-  assert_eq(flattened, { "": Json::empty_object() })
-  assert_eq(
-    @json.from_flatten_json(flattened, JsonPointer),
-    Json::empty_object(),
-  )
+  let source = Json::empty_object()
+  let pointer = @json.flatten(source, JsonPointer)
+  let javascript = @json.flatten(source, JavaScript)
+  assert_eq(pointer, { "": Json::empty_object() })
+  assert_eq(javascript, { "": Json::empty_object() })
+  assert_eq(@json.from_flatten_json(pointer, JsonPointer), source)
+  assert_eq(@json.from_flatten_json(javascript, JavaScript), source)
 }
 
 ///|
 test "flatten - preserves nested empty objects" {
   let source = Json::object({ "empty": Json::empty_object() })
-  let flattened = @json.flatten(source, JsonPointer)
-  assert_eq(flattened, { "/empty": Json::empty_object() })
-  assert_eq(@json.from_flatten_json(flattened, JsonPointer), source)
+  let pointer = @json.flatten(source, JsonPointer)
+  let javascript = @json.flatten(source, JavaScript)
+  assert_eq(pointer, { "/empty": Json::empty_object() })
+  assert_eq(javascript, { "empty": Json::empty_object() })
+  assert_eq(@json.from_flatten_json(pointer, JsonPointer), source)
+  assert_eq(@json.from_flatten_json(javascript, JavaScript), source)
 }
 
 ///|
 test "flatten - preserves empty objects in arrays" {
   let source : Json = [Json::empty_object(), 1, Json::empty_object()]
-  let flattened = @json.flatten(source, JsonPointer)
-  assert_eq(flattened, {
+  let pointer = @json.flatten(source, JsonPointer)
+  let javascript = @json.flatten(source, JavaScript)
+  assert_eq(pointer, {
     "/0": Json::empty_object(),
     "/1": 1,
     "/2": Json::empty_object(),
   })
-  assert_eq(@json.from_flatten_json(flattened, JsonPointer), source)
+  assert_eq(javascript, {
+    "[0]": Json::empty_object(),
+    "[1]": 1,
+    "[2]": Json::empty_object(),
+  })
+  assert_eq(@json.from_flatten_json(pointer, JsonPointer), source)
+  assert_eq(@json.from_flatten_json(javascript, JavaScript), source)
 }
 
 ///|
