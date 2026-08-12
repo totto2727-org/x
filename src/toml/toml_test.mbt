@@ -84,9 +84,11 @@ test "panic_TomlValue FromJson - rejects null" {
 }
 
 ///|
-test "panic_TomlValue FromJson - rejects a heterogeneous array" {
-  try! ((@json.from_json(@json.parse("[1, \"two\"]")) : @toml.TomlValue)
-  |> ignore)
+test "TomlValue FromJson - accepts a heterogeneous array" {
+  let value : @toml.TomlValue = @json.from_json(
+    @json.parse("[1, \"two\", true]"),
+  )
+  json_inspect(value.to_json(), content=[1, "two", true])
 }
 
 ///|

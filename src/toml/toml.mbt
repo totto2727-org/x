@@ -52,8 +52,8 @@ pub impl ToJson for TomlValue with fn to_json(self) {
 /// Converts flat JSON values into wrapped TOML values.
 ///
 /// JSON strings always become `TomlString`; date-time type information is not
-/// inferred. Non-finite numbers, JSON `null`, and heterogeneous arrays are
-/// rejected because TOML or JSON has no corresponding valid value.
+/// inferred. Non-finite numbers and JSON `null` are rejected because TOML or
+/// JSON has no corresponding valid value. Arrays may contain mixed types.
 pub impl @json.FromJson for TomlValue with fn from_json(json, path) {
   match json {
     Json::Null => raise @json.JsonDecodeError((path, "TOML has no null value"))
@@ -80,9 +80,6 @@ pub impl @json.FromJson for TomlValue with fn from_json(json, path) {
     Json::Array(_) => {
       let values : Array[TomlValue] = @json.from_json(json, path~)
       let inner_values = values.map(value => value.value)
-      guard @upstream_toml.TomlValue::is_homogeneous_array(inner_values) else {
-        raise @json.JsonDecodeError((path, "TOML arrays must be homogeneous"))
-      }
       TomlValue::TomlValue(@upstream_toml.TomlArray(inner_values))
     }
     Json::Object(_) => {
