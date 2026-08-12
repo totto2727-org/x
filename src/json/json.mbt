@@ -8,6 +8,15 @@ pub(all) enum PathFormat {
 } derive(Eq, Debug)
 
 ///|
+/// Controls whether arrays are expanded into indexed paths.
+pub(all) enum ArrayMode {
+  /// Expands array elements into indexed paths.
+  Expand
+  /// Preserves each array as a single `Json` leaf.
+  Preserve
+} derive(Eq, Debug)
+
+///|
 /// A failure while decoding or reconstructing flattened JSON paths.
 pub(all) suberror FlattenJsonError {
   ObjectValue(String)
@@ -30,18 +39,20 @@ priv enum BuildNode {
 /// Flattens JSON containers into path-keyed JSON leaf values.
 ///
 /// The caller must select RFC 6901 JSON Pointer or JavaScript-style paths.
-/// Objects and non-empty arrays are traversed recursively. Primitive values and
-/// empty arrays remain `Json` leaves. A root empty object produces an empty map,
-/// while nested empty objects remain `Json` leaves. JSON Pointer also rejects
-/// object keys matching RFC 6901 array-index syntax because they cannot be
-/// distinguished from array indices during reconstruction; JavaScript paths
+/// Objects are traversed recursively. Arrays are expanded by default; pass
+/// `array_mode=Preserve` to retain each array as a single `Json` leaf. Primitive
+/// values and empty arrays remain `Json` leaves. A root empty object produces an
+/// empty map, while nested empty objects remain `Json` leaves. JSON Pointer also
+/// rejects object keys matching RFC 6901 array-index syntax because they cannot
+/// be distinguished from array indices during reconstruction; JavaScript paths
 /// preserve them as bracket-quoted keys.
 pub fn flatten(
   json : Json,
   format : PathFormat,
+  array_mode? : ArrayMode = Expand,
 ) -> Map[String, Json] raise FlattenJsonError {
   let flattened : Map[String, Json] = Map([])
-  flatten_value(json, [], format, flattened)
+  flatten_value(json, [], format, array_mode, flattened)
   flattened
 }
 
@@ -50,6 +61,7 @@ fn flatten_value(
   value : Json,
   path : Array[PathSegment],
   format : PathFormat,
+  array_mode : ArrayMode,
   flattened : Map[String, Json],
 ) -> Unit raise FlattenJsonError {
   match value {
@@ -62,13 +74,13 @@ fn flatten_value(
         if format == JsonPointer && is_array_index_token(key) {
           raise AmbiguousPointerToken(path_string)
         }
-        flatten_value(child, child_path, format, flattened)
+        flatten_value(child, child_path, format, array_mode, flattened)
       }
-    Json::Array(values) if !values.is_empty() =>
+    Json::Array(values) if array_mode == Expand && !values.is_empty() =>
       for index, child in values {
         let child_path = [..path, Index(index)]
         ignore(checked_path(child_path, format))
-        flatten_value(child, child_path, format, flattened)
+        flatten_value(child, child_path, format, array_mode, flattened)
       }
     _ => flattened[checked_path(path, format)] = value
   }

@@ -35,6 +35,18 @@ test "JavaScript paths - flatten and reconstruct containers" {
 }
 
 ///|
+test "flatten - preserves arrays when requested" {
+  let groups : Json = [[{ "name": "Ada" }], [{ "name": "Grace" }]]
+  let source : Json = { "groups": groups }
+  let pointer = @json.flatten(source, JsonPointer, array_mode=Preserve)
+  let javascript = @json.flatten(source, JavaScript, array_mode=Preserve)
+  assert_eq(pointer, { "/groups": groups })
+  assert_eq(javascript, { "groups": groups })
+  assert_eq(@json.from_flatten_json(pointer, JsonPointer), source)
+  assert_eq(@json.from_flatten_json(javascript, JavaScript), source)
+}
+
+///|
 test "flatten - preserves primitive roots" {
   let pointer = @json.flatten("value", JsonPointer)
   let javascript = @json.flatten("value", JavaScript)
