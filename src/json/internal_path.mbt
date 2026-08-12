@@ -151,13 +151,15 @@ fn parse_javascript_path_(
   let segments : Array[PathSegment] = []
   let mut index = 0
   let mut expects_segment = true
+  let mut after_dot = false
   while index < chars.length() {
     match chars[index] {
       '.' if !expects_segment => {
         expects_segment = true
+        after_dot = true
         index = index + 1
       }
-      '[' => {
+      '[' if !after_dot => {
         let (segment, next_index) = parse_bracket_segment_(chars, index, path)
         segments.push(segment)
         expects_segment = false
@@ -174,6 +176,7 @@ fn parse_javascript_path_(
         guard is_identifier_(key) else { raise InvalidPath(path) }
         segments.push(Key(key))
         expects_segment = false
+        after_dot = false
       }
       _ => raise InvalidPath(path)
     }

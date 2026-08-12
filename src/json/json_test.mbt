@@ -131,3 +131,17 @@ test "JSON Pointer - rejects array indices outside Int range" {
     _ => fail("expected invalid path rejection")
   }
 }
+
+///|
+test "JavaScript paths - rejects a bracket segment after dot" {
+  for path in ["users.[0]", "users.[\"name\"]"] {
+    let flattened : Map[String, Json] = Map([])
+    flattened[path] = "value"
+    try @json.from_flatten_json(flattened, JavaScript) catch {
+      @json.InvalidPath(invalid_path) => assert_eq(invalid_path, path)
+      _ => fail("unexpected flatten JSON error")
+    } noraise {
+      _ => fail("expected invalid path rejection")
+    }
+  }
+}
