@@ -4,14 +4,6 @@ fn escape_pointer_key_(key : String) -> String {
 }
 
 ///|
-fn is_pointer_index_token_(value : String) -> Bool {
-  let chars = value.iter().to_array()
-  !chars.is_empty() &&
-  chars.all(char => char.is_ascii_digit()) &&
-  (chars.length() == 1 || chars[0] != '0')
-}
-
-///|
 fn format_json_pointer_(segments : Array[PathSegment]) -> String {
   let output = StringBuilder()
   for segment in segments {
@@ -35,7 +27,7 @@ fn parse_json_pointer_(
   let segments : Array[PathSegment] = []
   for token in path[1:].split("/") {
     let value = unescape_pointer_key_(token.to_owned(), path)
-    if is_pointer_index_token_(value) {
+    if is_array_index_token_(value) {
       let index = try @string.parse_int(value) catch {
         _ => raise InvalidPath(path)
       } noraise {

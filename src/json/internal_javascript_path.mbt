@@ -132,7 +132,7 @@ fn parse_bracket_segment_(
     raise InvalidPath(path)
   }
   let token = number.to_string()
-  guard is_pointer_index_token_(token) else { raise InvalidPath(path) }
+  guard is_array_index_token_(token) else { raise InvalidPath(path) }
   let value = try @string.parse_int(token) catch {
     _ => raise InvalidPath(path)
   } noraise {

@@ -170,7 +170,7 @@ test "from_flatten_json - rejects excessive path depth" {
   let flattened : Map[String, Json] = Map([])
   flattened[path] = "value"
   try @json.from_flatten_json(flattened, JavaScript) catch {
-    @json.InvalidPath(invalid_path) => assert_eq(invalid_path, path)
+    @json.PathDepthExceeded(depth) => assert_eq(depth, 257)
     _ => fail("unexpected flatten JSON error")
   } noraise {
     _ => fail("expected invalid path rejection")
@@ -183,7 +183,7 @@ test "from_flatten_json - rejects excessive path length" {
   let flattened : Map[String, Json] = Map([])
   flattened[path] = "value"
   try @json.from_flatten_json(flattened, JavaScript) catch {
-    @json.InvalidPath(invalid_path) => assert_eq(invalid_path, path)
+    @json.PathLengthExceeded(length) => assert_eq(length, 16385)
     _ => fail("unexpected flatten JSON error")
   } noraise {
     _ => fail("expected invalid path rejection")
@@ -196,7 +196,7 @@ test "flatten - applies the same path bounds as reconstruction" {
   let source : Map[String, Json] = Map([])
   source[long_key] = "value"
   try @json.flatten(Json::object(source), JavaScript) catch {
-    @json.InvalidPath(path) => assert_eq(path, long_key)
+    @json.PathLengthExceeded(length) => assert_eq(length, 16385)
     _ => fail("unexpected flatten JSON error")
   } noraise {
     _ => fail("expected invalid path rejection")

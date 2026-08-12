@@ -14,6 +14,8 @@ pub(all) suberror FlattenJsonError {
   EmptyObject(String)
   AmbiguousPointerToken(String)
   InvalidPath(String)
+  PathLengthExceeded(Int)
+  PathDepthExceeded(Int)
   PathConflict(String)
   ArrayIndexGap(String)
 } derive(Eq, Debug)
@@ -58,7 +60,7 @@ fn flatten_value_(
       for key, child in object {
         let child_path = [..path, Key(key)]
         let path_string = checked_path_(child_path, format)
-        if format == JsonPointer && is_pointer_index_token_(key) {
+        if format == JsonPointer && is_array_index_token_(key) {
           raise AmbiguousPointerToken(path_string)
         }
         flatten_value_(child, child_path, format, flattened)
