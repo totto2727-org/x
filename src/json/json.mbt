@@ -53,20 +53,23 @@ fn flatten_value_(
 ) -> Unit raise FlattenJsonError {
   match value {
     Json::Object(object) if object.is_empty() && !path.is_empty() =>
-      raise EmptyObject(format_path_(path, format))
+      raise EmptyObject(checked_path_(path, format))
     Json::Object(object) =>
       for key, child in object {
         let child_path = [..path, Key(key)]
+        let path_string = checked_path_(child_path, format)
         if format == JsonPointer && is_pointer_index_token_(key) {
-          raise AmbiguousPointerToken(format_path_(child_path, format))
+          raise AmbiguousPointerToken(path_string)
         }
         flatten_value_(child, child_path, format, flattened)
       }
     Json::Array(values) if !values.is_empty() =>
       for index, child in values {
-        flatten_value_(child, [..path, Index(index)], format, flattened)
+        let child_path = [..path, Index(index)]
+        ignore(checked_path_(child_path, format))
+        flatten_value_(child, child_path, format, flattened)
       }
-    _ => flattened[format_path_(path, format)] = value
+    _ => flattened[checked_path_(path, format)] = value
   }
 }
 
@@ -75,8 +78,8 @@ fn flatten_value_(
 ///
 /// `format` must match the format passed to `flatten`. Object values are
 /// rejected because objects must be represented by their flattened children.
-/// Paths longer than 16,384 characters or deeper than 256 segments are rejected
-/// to keep reconstruction within a bounded typed-error boundary.
+/// Paths longer than 16,384 UTF-16 code units or deeper than 256 segments are
+/// rejected to keep reconstruction within a bounded typed-error boundary.
 pub fn from_flatten_json(
   flattened : Map[String, Json],
   format : PathFormat,

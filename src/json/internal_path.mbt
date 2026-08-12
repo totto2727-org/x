@@ -19,6 +19,19 @@ fn format_path_(segments : Array[PathSegment], format : PathFormat) -> String {
 }
 
 ///|
+fn checked_path_(
+  segments : Array[PathSegment],
+  format : PathFormat,
+) -> String raise FlattenJsonError {
+  guard segments.length() <= max_path_segments_ else {
+    raise InvalidPath(format_path_(segments, format))
+  }
+  let path = format_path_(segments, format)
+  guard path.length() <= max_path_length_ else { raise InvalidPath(path) }
+  path
+}
+
+///|
 fn parse_path_(
   path : String,
   format : PathFormat,

@@ -189,3 +189,16 @@ test "from_flatten_json - rejects excessive path length" {
     _ => fail("expected invalid path rejection")
   }
 }
+
+///|
+test "flatten - applies the same path bounds as reconstruction" {
+  let long_key = "k".repeat(16385)
+  let source : Map[String, Json] = Map([])
+  source[long_key] = "value"
+  try @json.flatten(Json::object(source), JavaScript) catch {
+    @json.InvalidPath(path) => assert_eq(path, long_key)
+    _ => fail("unexpected flatten JSON error")
+  } noraise {
+    _ => fail("expected invalid path rejection")
+  }
+}
