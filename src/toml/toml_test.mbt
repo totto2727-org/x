@@ -61,6 +61,24 @@ test "TomlValue FromJson - keeps a date string as TomlString" {
 }
 
 ///|
+test "panic_TomlValue FromJson - rejects NaN" {
+  try! ((@json.from_json(Json::number(@double.not_a_number)) : @toml.TomlValue)
+  |> ignore)
+}
+
+///|
+test "panic_TomlValue FromJson - rejects positive numeric overflow" {
+  try! ((@json.from_json(@json.parse("1e999999999")) : @toml.TomlValue)
+  |> ignore)
+}
+
+///|
+test "panic_TomlValue FromJson - rejects negative numeric overflow" {
+  try! ((@json.from_json(@json.parse("-1e999999999")) : @toml.TomlValue)
+  |> ignore)
+}
+
+///|
 test "panic_TomlValue FromJson - rejects null" {
   try! ((@json.from_json(Json::null()) : @toml.TomlValue) |> ignore)
 }

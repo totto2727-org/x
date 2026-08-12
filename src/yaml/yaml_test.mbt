@@ -35,6 +35,22 @@ test "Yaml JSON - round trips flat values" {
 }
 
 ///|
+test "panic_Yaml FromJson - rejects NaN" {
+  try! ((@json.from_json(Json::number(@double.not_a_number)) : @yaml.Yaml)
+  |> ignore)
+}
+
+///|
+test "panic_Yaml FromJson - rejects positive numeric overflow" {
+  try! ((@json.from_json(@json.parse("1e999999999")) : @yaml.Yaml) |> ignore)
+}
+
+///|
+test "panic_Yaml FromJson - rejects negative numeric overflow" {
+  try! ((@json.from_json(@json.parse("-1e999999999")) : @yaml.Yaml) |> ignore)
+}
+
+///|
 test "panic_Yaml ToJson - rejects NaN" {
   @yaml.Yaml(@upstream_yaml.Yaml::Real(@double.not_a_number, repr=".nan")).to_json()
   |> ignore

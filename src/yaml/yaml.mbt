@@ -44,7 +44,8 @@ pub impl ToJson for Yaml with fn to_json(self) {
 /// Converts JSON values into the corresponding flat wrapped YAML value.
 ///
 /// JSON numbers with an integer representation become `Yaml::Integer`; all
-/// other JSON numbers become `Yaml::Real`. `Yaml::BadValue` is never produced.
+/// other finite JSON numbers become `Yaml::Real`. Non-finite numbers are
+/// rejected, and `Yaml::BadValue` is never produced.
 pub impl @json.FromJson for Yaml with fn from_json(json, path) {
   match json {
     Json::Null => Yaml::Yaml(@upstream_yaml.Yaml::Null)
@@ -52,6 +53,11 @@ pub impl @json.FromJson for Yaml with fn from_json(json, path) {
     Json::False => Yaml::Yaml(@upstream_yaml.Yaml::Boolean(false))
     Json::String(value) => Yaml::Yaml(@upstream_yaml.Yaml::String(value))
     Json::Number(value, repr~) => {
+      if value.is_nan() ||
+        value == @double.infinity ||
+        value == @double.neg_infinity {
+        raise @json.JsonDecodeError((path, "YAML numbers must be finite"))
+      }
       let representation = match repr {
         Some(representation) => representation
         None => value.to_string()
