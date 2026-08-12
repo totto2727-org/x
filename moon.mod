@@ -1,6 +1,6 @@
 name = "totto2727/x"
 
-version = "0.4.0"
+version = "0.5.0"
 
 import {
   "moonbitlang/x@0.4.47",
