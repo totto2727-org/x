@@ -31,7 +31,8 @@ priv enum BuildNode {
 ///
 /// The caller must select RFC 6901 JSON Pointer or JavaScript-style paths.
 /// Objects and non-empty arrays are traversed recursively. Primitive values and
-/// empty arrays and empty objects remain `Json` leaves. JSON Pointer also rejects
+/// empty arrays remain `Json` leaves. A root empty object produces an empty map,
+/// while nested empty objects remain `Json` leaves. JSON Pointer also rejects
 /// object keys matching RFC 6901 array-index syntax because they cannot be
 /// distinguished from array indices during reconstruction; JavaScript paths
 /// preserve them as bracket-quoted keys.
