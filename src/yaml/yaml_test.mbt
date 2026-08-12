@@ -33,3 +33,25 @@ test "Yaml JSON - round trips flat values" {
     "items": ["a", null],
   })
 }
+
+///|
+test "panic_Yaml ToJson - rejects NaN" {
+  @yaml.Yaml(@upstream_yaml.Yaml::Real(@double.not_a_number, repr=".nan")).to_json()
+  |> ignore
+}
+
+///|
+test "panic_Yaml ToJson - rejects infinity" {
+  @yaml.Yaml(@upstream_yaml.Yaml::Real(@double.infinity, repr=".inf")).to_json()
+  |> ignore
+}
+
+///|
+test "panic_Yaml ToJson - rejects nested negative infinity" {
+  @yaml.Yaml(
+    @upstream_yaml.Yaml::Array([
+      @upstream_yaml.Yaml::Real(@double.neg_infinity, repr="-.inf"),
+    ]),
+  ).to_json()
+  |> ignore
+}

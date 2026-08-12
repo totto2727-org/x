@@ -12,9 +12,32 @@ pub fn Yaml::Yaml(value : @upstream_yaml.Yaml) -> Yaml {
 }
 
 ///|
-/// Delegates JSON serialization to the upstream YAML implementation.
+/// Converts wrapped YAML into flat JSON.
+///
+/// YAML `inf` and `nan` reals abort conversion because JSON cannot represent
+/// non-finite numbers. `Yaml::BadValue` also has no JSON representation.
 pub impl ToJson for Yaml with fn to_json(self) {
-  self.value.to_json()
+  match self.value {
+    @upstream_yaml.Null => Json::null()
+    @upstream_yaml.Map(values) =>
+      Json::object(values.map((_, value) => Yaml::Yaml(value).to_json()))
+    @upstream_yaml.Array(values) =>
+      Json::array(values.map(value => Yaml::Yaml(value).to_json()))
+    @upstream_yaml.Boolean(value) => Json::boolean(value)
+    @upstream_yaml.String(value) => Json::string(value)
+    @upstream_yaml.Integer(value) =>
+      Json::number(value.to_double(), repr=value.to_string())
+    @upstream_yaml.Real(value, repr~) => {
+      if value.is_nan() ||
+        value == @double.infinity ||
+        value == @double.neg_infinity {
+        abort("non-finite YAML reals cannot be represented as JSON")
+      }
+      Json::number(value, repr~)
+    }
+    @upstream_yaml.BadValue =>
+      abort("Yaml::BadValue cannot be represented as JSON")
+  }
 }
 
 ///|
