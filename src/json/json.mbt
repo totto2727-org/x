@@ -57,7 +57,7 @@ fn flatten_value_(
     Json::Object(object) =>
       for key, child in object {
         let child_path = [..path, Key(key)]
-        if format == JsonPointer && pointer_index_(key) is Some(_) {
+        if format == JsonPointer && is_pointer_index_token_(key) {
           raise AmbiguousPointerToken(format_path_(child_path, format))
         }
         flatten_value_(child, child_path, format, flattened)

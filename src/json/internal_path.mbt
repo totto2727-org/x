@@ -29,13 +29,11 @@ fn escape_pointer_key_(key : String) -> String {
 }
 
 ///|
-fn pointer_index_(value : String) -> Int? {
-  try @string.parse_int(value) catch {
-    _ => None
-  } noraise {
-    index if index >= 0 && index.to_string() == value => Some(index)
-    _ => None
-  }
+fn is_pointer_index_token_(value : String) -> Bool {
+  let chars = value.iter().to_array()
+  !chars.is_empty() &&
+  chars.all(char => char.is_ascii_digit()) &&
+  (chars.length() == 1 || chars[0] != '0')
 }
 
 ///|
@@ -62,9 +60,15 @@ fn parse_json_pointer_(
   let segments : Array[PathSegment] = []
   for token in path[1:].split("/") {
     let value = unescape_pointer_key_(token.to_owned(), path)
-    match pointer_index_(value) {
-      Some(index) => segments.push(Index(index))
-      None => segments.push(Key(value))
+    if is_pointer_index_token_(value) {
+      let index = try @string.parse_int(value) catch {
+        _ => raise InvalidPath(path)
+      } noraise {
+        value => value
+      }
+      segments.push(Index(index))
+    } else {
+      segments.push(Key(value))
     }
   }
   segments

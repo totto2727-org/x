@@ -105,10 +105,29 @@ test "flatten - rejects nested empty objects" {
 
 ///|
 test "JSON Pointer - rejects ambiguous numeric object keys" {
-  try @json.flatten({ "0": "zero" }, JsonPointer) catch {
-    @json.AmbiguousPointerToken(path) => inspect(path, content="/0")
+  try
+    @json.flatten({ "999999999999999999999999": "large" }, JsonPointer)
+  catch {
+    @json.AmbiguousPointerToken(path) =>
+      inspect(path, content="/999999999999999999999999")
     _ => fail("unexpected flatten JSON error")
   } noraise {
     _ => fail("expected ambiguous pointer token rejection")
+  }
+}
+
+///|
+test "JSON Pointer - rejects array indices outside Int range" {
+  try
+    @json.from_flatten_json(
+      { "/users/999999999999999999999999": "large" },
+      JsonPointer,
+    )
+  catch {
+    @json.InvalidPath(path) =>
+      inspect(path, content="/users/999999999999999999999999")
+    _ => fail("unexpected flatten JSON error")
+  } noraise {
+    _ => fail("expected invalid path rejection")
   }
 }
