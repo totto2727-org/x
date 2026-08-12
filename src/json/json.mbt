@@ -31,11 +31,10 @@ priv enum BuildNode {
 ///
 /// The caller must select RFC 6901 JSON Pointer or JavaScript-style paths.
 /// Objects and non-empty arrays are traversed recursively. Primitive values and
-/// empty arrays remain `Json` leaves. Empty objects produce no entries, so their
-/// containing key is not preserved. JSON Pointer also rejects object keys
-/// matching RFC 6901 array-index syntax because they cannot be distinguished
-/// from array indices during reconstruction; JavaScript paths preserve them as
-/// bracket-quoted keys.
+/// empty arrays and empty objects remain `Json` leaves. JSON Pointer also rejects
+/// object keys matching RFC 6901 array-index syntax because they cannot be
+/// distinguished from array indices during reconstruction; JavaScript paths
+/// preserve them as bracket-quoted keys.
 pub fn flatten(
   json : Json,
   format : PathFormat,
@@ -53,6 +52,8 @@ fn flatten_value(
   flattened : Map[String, Json],
 ) -> Unit raise FlattenJsonError {
   match value {
+    Json::Object(object) if object.is_empty() =>
+      flattened[checked_path(path, format)] = value
     Json::Object(object) =>
       for key, child in object {
         let child_path = [..path, Key(key)]
@@ -75,8 +76,9 @@ fn flatten_value(
 ///|
 /// Reconstructs JSON from path-keyed leaf values.
 ///
-/// `format` must match the format passed to `flatten`. Object values are
-/// rejected because objects must be represented by their flattened children.
+/// `format` must match the format passed to `flatten`. Non-empty object values
+/// are rejected because they must be represented by their flattened children;
+/// empty objects are valid leaves.
 /// Paths longer than 16,384 UTF-16 code units or deeper than 256 segments are
 /// rejected to keep reconstruction within a bounded typed-error boundary.
 pub fn from_flatten_json(
@@ -89,7 +91,7 @@ pub fn from_flatten_json(
   let mut root : BuildNode? = None
   for path, value in flattened {
     match value {
-      Json::Object(_) => raise ObjectValue(path)
+      Json::Object(object) if !object.is_empty() => raise ObjectValue(path)
       _ => ()
     }
     let segments = parse_path(path, format)
