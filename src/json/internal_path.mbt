@@ -23,8 +23,16 @@ fn checked_path_(
   segments : Array[PathSegment],
   format : PathFormat,
 ) -> String raise FlattenJsonError {
-  guard segments.length() <= max_path_segments_ else {
-    raise InvalidPath(format_path_(segments, format))
+  guard segments.length() <= max_path_segments_ else { raise InvalidPath("") }
+  let mut raw_length = 0
+  for segment in segments {
+    match segment {
+      Key(key) => {
+        raw_length = raw_length + key.length()
+        guard raw_length <= max_path_length_ else { raise InvalidPath(key) }
+      }
+      Index(_) => ()
+    }
   }
   let path = format_path_(segments, format)
   guard path.length() <= max_path_length_ else { raise InvalidPath(path) }
