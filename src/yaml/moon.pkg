@@ -1,0 +1,6 @@
+import {
+  "moonbit-community/yaml" @upstream_yaml,
+  "moonbitlang/core/double",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+}

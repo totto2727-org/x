@@ -1,0 +1,7 @@
+import {
+  "bobzhang/toml" @upstream_toml,
+  "bobzhang/toml/datetime" @upstream_datetime,
+  "moonbitlang/core/double",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+}
