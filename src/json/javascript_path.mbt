@@ -1,9 +1,9 @@
 ///|
-fn format_javascript_path_(segments : Array[PathSegment]) -> String {
+fn format_javascript_path(segments : Array[PathSegment]) -> String {
   let output = StringBuilder()
   for index, segment in segments {
     match segment {
-      Key(key) if is_identifier_(key) => {
+      Key(key) if is_identifier(key) => {
         if index > 0 {
           output.write_char('.')
         }
@@ -25,7 +25,7 @@ fn format_javascript_path_(segments : Array[PathSegment]) -> String {
 }
 
 ///|
-fn is_identifier_(key : String) -> Bool {
+fn is_identifier(key : String) -> Bool {
   let chars = key.iter().to_array()
   guard chars.length() > 0 else { return false }
   guard chars[0].is_ascii_alphabetic() || chars[0] == '_' || chars[0] == '$' else {
@@ -40,7 +40,7 @@ fn is_identifier_(key : String) -> Bool {
 }
 
 ///|
-fn parse_javascript_path_(
+fn parse_javascript_path(
   path : String,
 ) -> Array[PathSegment] raise FlattenJsonError {
   if path == "" {
@@ -59,7 +59,7 @@ fn parse_javascript_path_(
         index = index + 1
       }
       '[' if !after_dot => {
-        let (segment, next_index) = parse_bracket_segment_(chars, index, path)
+        let (segment, next_index) = parse_bracket_segment(chars, index, path)
         segments.push(segment)
         expects_segment = false
         index = next_index
@@ -71,8 +71,8 @@ fn parse_javascript_path_(
               chars[index] != '[' {
           index = index + 1
         }
-        let key = chars_to_string_(chars[start:index])
-        guard is_identifier_(key) else { raise InvalidPath(path) }
+        let key = chars_to_string(chars[start:index])
+        guard is_identifier(key) else { raise InvalidPath(path) }
         segments.push(Key(key))
         expects_segment = false
         after_dot = false
@@ -85,7 +85,7 @@ fn parse_javascript_path_(
 }
 
 ///|
-fn parse_bracket_segment_(
+fn parse_bracket_segment(
   chars : Array[Char],
   start : Int,
   path : String,
@@ -132,7 +132,7 @@ fn parse_bracket_segment_(
     raise InvalidPath(path)
   }
   let token = number.to_string()
-  guard is_array_index_token_(token) else { raise InvalidPath(path) }
+  guard is_array_index_token(token) else { raise InvalidPath(path) }
   let value = try @string.parse_int(token) catch {
     _ => raise InvalidPath(path)
   } noraise {
@@ -143,7 +143,7 @@ fn parse_bracket_segment_(
 }
 
 ///|
-fn chars_to_string_(chars : ArrayView[Char]) -> String {
+fn chars_to_string(chars : ArrayView[Char]) -> String {
   let output = StringBuilder()
   for char in chars {
     output.write_char(char)

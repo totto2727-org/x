@@ -1,15 +1,15 @@
 ///|
-fn escape_pointer_key_(key : String) -> String {
+fn escape_pointer_key(key : String) -> String {
   key.replace_all(old="~", new="~0").replace_all(old="/", new="~1")
 }
 
 ///|
-fn format_json_pointer_(segments : Array[PathSegment]) -> String {
+fn format_json_pointer(segments : Array[PathSegment]) -> String {
   let output = StringBuilder()
   for segment in segments {
     output.write_char('/')
     match segment {
-      Key(key) => output.write_string(escape_pointer_key_(key))
+      Key(key) => output.write_string(escape_pointer_key(key))
       Index(index) => output.write_object(index)
     }
   }
@@ -17,7 +17,7 @@ fn format_json_pointer_(segments : Array[PathSegment]) -> String {
 }
 
 ///|
-fn parse_json_pointer_(
+fn parse_json_pointer(
   path : String,
 ) -> Array[PathSegment] raise FlattenJsonError {
   if path == "" {
@@ -26,8 +26,8 @@ fn parse_json_pointer_(
   guard path.has_prefix("/") else { raise InvalidPath(path) }
   let segments : Array[PathSegment] = []
   for token in path[1:].split("/") {
-    let value = unescape_pointer_key_(token.to_owned(), path)
-    if is_array_index_token_(value) {
+    let value = unescape_pointer_key(token.to_owned(), path)
+    if is_array_index_token(value) {
       let index = try @string.parse_int(value) catch {
         _ => raise InvalidPath(path)
       } noraise {
@@ -42,7 +42,7 @@ fn parse_json_pointer_(
 }
 
 ///|
-fn unescape_pointer_key_(
+fn unescape_pointer_key(
   token : String,
   path : String,
 ) -> String raise FlattenJsonError {

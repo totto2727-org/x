@@ -11,7 +11,6 @@ pub(all) enum PathFormat {
 /// A failure while decoding or reconstructing flattened JSON paths.
 pub(all) suberror FlattenJsonError {
   ObjectValue(String)
-  EmptyObject(String)
   AmbiguousPointerToken(String)
   InvalidPath(String)
   PathLengthExceeded(Int)
@@ -32,46 +31,44 @@ priv enum BuildNode {
 ///
 /// The caller must select RFC 6901 JSON Pointer or JavaScript-style paths.
 /// Objects and non-empty arrays are traversed recursively. Primitive values and
-/// empty arrays remain `Json` leaves. A nested empty object cannot be represented
-/// without using an object-valued leaf, so it is rejected. JSON Pointer also
-/// rejects object keys matching RFC 6901 array-index syntax because they cannot
-/// be distinguished from array indices during reconstruction; JavaScript paths
-/// preserve them as bracket-quoted keys.
+/// empty arrays remain `Json` leaves. Empty objects produce no entries, so their
+/// containing key is not preserved. JSON Pointer also rejects object keys
+/// matching RFC 6901 array-index syntax because they cannot be distinguished
+/// from array indices during reconstruction; JavaScript paths preserve them as
+/// bracket-quoted keys.
 pub fn flatten(
   json : Json,
   format : PathFormat,
 ) -> Map[String, Json] raise FlattenJsonError {
   let flattened : Map[String, Json] = Map([])
-  flatten_value_(json, [], format, flattened)
+  flatten_value(json, [], format, flattened)
   flattened
 }
 
 ///|
-fn flatten_value_(
+fn flatten_value(
   value : Json,
   path : Array[PathSegment],
   format : PathFormat,
   flattened : Map[String, Json],
 ) -> Unit raise FlattenJsonError {
   match value {
-    Json::Object(object) if object.is_empty() && !path.is_empty() =>
-      raise EmptyObject(checked_path_(path, format))
     Json::Object(object) =>
       for key, child in object {
         let child_path = [..path, Key(key)]
-        let path_string = checked_path_(child_path, format)
-        if format == JsonPointer && is_array_index_token_(key) {
+        let path_string = checked_path(child_path, format)
+        if format == JsonPointer && is_array_index_token(key) {
           raise AmbiguousPointerToken(path_string)
         }
-        flatten_value_(child, child_path, format, flattened)
+        flatten_value(child, child_path, format, flattened)
       }
     Json::Array(values) if !values.is_empty() =>
       for index, child in values {
         let child_path = [..path, Index(index)]
-        ignore(checked_path_(child_path, format))
-        flatten_value_(child, child_path, format, flattened)
+        ignore(checked_path(child_path, format))
+        flatten_value(child, child_path, format, flattened)
       }
-    _ => flattened[checked_path_(path, format)] = value
+    _ => flattened[checked_path(path, format)] = value
   }
 }
 
@@ -95,14 +92,14 @@ pub fn from_flatten_json(
       Json::Object(_) => raise ObjectValue(path)
       _ => ()
     }
-    let segments = parse_path_(path, format)
-    root = Some(insert_value_(root, segments, 0, path, value))
+    let segments = parse_path(path, format)
+    root = Some(insert_value(root, segments, 0, path, value))
   }
-  build_json_(root.unwrap(), "")
+  build_json(root.unwrap(), "")
 }
 
 ///|
-fn insert_value_(
+fn insert_value(
   node : BuildNode?,
   segments : Array[PathSegment],
   index : Int,
@@ -120,7 +117,7 @@ fn insert_value_(
         Some(Object(children)) => children
         Some(_) => raise PathConflict(path)
       }
-      children[key] = insert_value_(
+      children[key] = insert_value(
         children.get(key),
         segments,
         index + 1,
@@ -135,7 +132,7 @@ fn insert_value_(
         Some(Array(children)) => children
         Some(_) => raise PathConflict(path)
       }
-      children[array_index] = insert_value_(
+      children[array_index] = insert_value(
         children.get(array_index),
         segments,
         index + 1,
@@ -148,13 +145,13 @@ fn insert_value_(
 }
 
 ///|
-fn build_json_(node : BuildNode, path : String) -> Json raise FlattenJsonError {
+fn build_json(node : BuildNode, path : String) -> Json raise FlattenJsonError {
   match node {
     Value(value) => value
     Object(children) => {
       let object : Map[String, Json] = Map([])
       for key, child in children {
-        object[key] = build_json_(child, child_path_(path, key))
+        object[key] = build_json(child, child_path(path, key))
       }
       Json::object(object)
     }
@@ -164,7 +161,7 @@ fn build_json_(node : BuildNode, path : String) -> Json raise FlattenJsonError {
         guard children.get(index) is Some(child) else {
           raise ArrayIndexGap(path)
         }
-        values.push(build_json_(child, "\{path}[\{index}]"))
+        values.push(build_json(child, "\{path}[\{index}]"))
       }
       Json::array(values)
     }
@@ -172,7 +169,7 @@ fn build_json_(node : BuildNode, path : String) -> Json raise FlattenJsonError {
 }
 
 ///|
-fn child_path_(path : String, key : String) -> String {
+fn child_path(path : String, key : String) -> String {
   if path == "" {
     key
   } else {

@@ -92,15 +92,12 @@ test "flatten - round-trips an empty root object" {
 }
 
 ///|
-test "flatten - rejects nested empty objects" {
-  try
-    @json.flatten(Json::object({ "empty": Json::empty_object() }), JsonPointer)
-  catch {
-    @json.EmptyObject(path) => inspect(path, content="/empty")
-    _ => fail("unexpected flatten JSON error")
-  } noraise {
-    _ => fail("expected empty object rejection")
-  }
+test "flatten - omits nested empty objects" {
+  let flattened = @json.flatten(
+    Json::object({ "empty": Json::empty_object() }),
+    JsonPointer,
+  )
+  assert_true(flattened.is_empty())
 }
 
 ///|
