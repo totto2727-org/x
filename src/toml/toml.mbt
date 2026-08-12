@@ -38,10 +38,12 @@ pub impl ToJson for TomlValue with fn to_json(self) {
       Json::object(
         values.map((_, value) => TomlValue::TomlValue(value).to_json()),
       )
-    @upstream_toml.TomlDateTime(_) =>
-      match self.value.datetime_info() {
-        Some((_, value)) => Json::string(value)
-        None => abort("TOML date-time value did not expose its stored string")
+    @upstream_toml.TomlDateTime(date_time) =>
+      match date_time {
+        @upstream_datetime.OffsetDateTime(value)
+        | @upstream_datetime.LocalDateTime(value)
+        | @upstream_datetime.LocalDate(value)
+        | @upstream_datetime.LocalTime(value) => Json::string(value)
       }
   }
 }
