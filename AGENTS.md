@@ -4,14 +4,14 @@
 
 ```text
 .github/workflows/  Validation and Mooncakes publishing workflows
-src/copy/            Independent logical-copy trait, tests, and canonical README
-src/json/            JSON flattening, reconstruction, and path formats
-src/path/            Validated absolute and relative path values
-src/toml/            Owned TOML-to-JSON conversion wrapper
-src/yaml/            Owned YAML-to-JSON conversion wrapper
+src/copy/            Independent logical-copy trait, tests, and package README
+src/json/            JSON flattening, reconstruction, path formats, and package README
+src/path/            Validated absolute and relative path values and package README
+src/toml/            Owned TOML-to-JSON conversion wrapper and package README
+src/yaml/            Owned YAML-to-JSON conversion wrapper and package README
 flake.nix            Nix development shell for MoonBit
 moon.mod             Module metadata and dependencies
-README.mbt.md        Relative symlink to src/copy/README.mbt.md
+README.mbt.md        Physical module overview and canonical MoonBit README
 README.md            Relative symlink to README.mbt.md
 ```
 
@@ -21,7 +21,8 @@ README.md            Relative symlink to README.mbt.md
 
 - Run commands from the repository root.
 - Enter the environment with `nix develop` before running MoonBit commands.
-- Keep the relative link chain `README.md -> README.mbt.md -> src/copy/README.mbt.md`.
+- Keep the root link `README.md -> README.mbt.md`; the root README is a physical module overview.
+- Keep detailed package documentation in each `src/<package>/README.mbt.md`; only the root README has a `README.md` link.
 - Run the full check sequence after changing public declarations, serialization behavior, path parsing, or documentation examples.
 
 ### Standard tasks
@@ -29,8 +30,8 @@ README.md            Relative symlink to README.mbt.md
 - `nix develop` — Enter the Nix-provided MoonBit environment.
 - `moon fmt` — Format MoonBit source and literate documentation.
 - `moon fmt --check` — Verify formatting without writing changes.
-- `moon check README.mbt.md` — Check the canonical literate README in the `copy` package.
-- `moon test README.mbt.md` — Run the canonical README example.
+- `moon check src/<package>/README.mbt.md` — Check one package-specific literate README.
+- `moon test src/<package>/README.mbt.md` — Run one package-specific README example.
 - `moon check --deny-warn` — Type-check every package and reject warnings.
 - `moon build` — Build every package.
 - `moon test` — Run the complete test suite.
