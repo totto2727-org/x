@@ -4,14 +4,14 @@
 
 ```text
 .github/workflows/  Validation and Mooncakes publishing workflows
-src/copy/            Independent logical-copy trait and implementations
+src/copy/            Independent logical-copy trait, tests, and canonical README
 src/json/            JSON flattening, reconstruction, and path formats
 src/path/            Validated absolute and relative path values
 src/toml/            Owned TOML-to-JSON conversion wrapper
 src/yaml/            Owned YAML-to-JSON conversion wrapper
 flake.nix            Nix development shell for MoonBit
 moon.mod             Module metadata and dependencies
-README.mbt.md        Canonical literate README
+README.mbt.md        Relative symlink to src/copy/README.mbt.md
 README.md            Relative symlink to README.mbt.md
 ```
 
@@ -21,7 +21,7 @@ README.md            Relative symlink to README.mbt.md
 
 - Run commands from the repository root.
 - Enter the environment with `nix develop` before running MoonBit commands.
-- Keep `README.md` as the relative symlink to `README.mbt.md`.
+- Keep the relative link chain `README.md -> README.mbt.md -> src/copy/README.mbt.md`.
 - Run the full check sequence after changing public declarations, serialization behavior, path parsing, or documentation examples.
 
 ### Standard tasks
@@ -29,6 +29,8 @@ README.md            Relative symlink to README.mbt.md
 - `nix develop` — Enter the Nix-provided MoonBit environment.
 - `moon fmt` — Format MoonBit source and literate documentation.
 - `moon fmt --check` — Verify formatting without writing changes.
+- `moon check README.mbt.md` — Check the canonical literate README in the `copy` package.
+- `moon test README.mbt.md` — Run the canonical README example.
 - `moon check --deny-warn` — Type-check every package and reject warnings.
 - `moon build` — Build every package.
 - `moon test` — Run the complete test suite.
@@ -61,7 +63,7 @@ README.md            Relative symlink to README.mbt.md
 - **MoonBit**: Builds, checks, tests, formats, and packages the module.
 - **Mooncakes**: Publishes and renders the canonical API documentation from source comments.
 - **Nix flakes**: Provide the development toolchain used locally and in CI.
-- **GitHub Actions**: Run validation and publish tagged main-branch state with the configured repository secret.
+- **GitHub Actions**: Run validation and publish main-branch state with the configured repository secret.
 
 ## Package-specific rules
 

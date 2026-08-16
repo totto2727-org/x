@@ -4,8 +4,11 @@
 /// `join` accepts a relative path so implementations can preserve their path
 /// form without revalidating the result.
 pub(open) trait Path {
+  /// Parses and normalizes a string, raising when it does not match the implementation's absolute or relative form.
   fn from_string(String) -> Self raise
+  /// Returns the normalized filesystem-path string.
   fn to_string(Self) -> String
+  /// Joins a normalized relative path while preserving the receiver's path form.
   fn join(Self, RelativePath) -> Self
 }
 
