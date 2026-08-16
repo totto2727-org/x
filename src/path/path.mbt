@@ -12,6 +12,7 @@ pub(open) trait Path {
 ///|
 /// A normalized absolute filesystem path.
 pub struct AbsolutePath {
+  /// The normalized absolute path, exposed as a public readonly field.
   path : @moon_path.Path
 } derive(Debug, Eq)
 
@@ -56,6 +57,7 @@ pub impl @json.FromJson for AbsolutePath with fn from_json(json, path) {
 ///|
 /// A normalized relative filesystem path.
 pub struct RelativePath {
+  /// The normalized relative path, exposed as a public readonly field.
   path : @moon_path.Path
 } derive(Debug, Eq)
 

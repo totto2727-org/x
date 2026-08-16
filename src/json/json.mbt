@@ -19,12 +19,19 @@ pub(all) enum ArrayMode {
 ///|
 /// A failure while decoding or reconstructing flattened JSON paths.
 pub(all) suberror FlattenJsonError {
+  /// A flattened leaf contains a non-empty object that must be expanded instead.
   ObjectValue(String)
+  /// A JSON Pointer key is indistinguishable from an array index.
   AmbiguousPointerToken(String)
+  /// A path does not conform to the selected path format.
   InvalidPath(String)
+  /// A path exceeds 16,384 UTF-16 code units.
   PathLengthExceeded(Int)
+  /// A path exceeds 256 segments.
   PathDepthExceeded(Int)
+  /// Multiple flattened paths require incompatible values at the same location.
   PathConflict(String)
+  /// Reconstructed array indices contain a gap.
   ArrayIndexGap(String)
 } derive(Eq, Debug)
 
