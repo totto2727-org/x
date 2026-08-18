@@ -2,6 +2,7 @@
 /// Owns an upstream TOML value so standard JSON traits can be implemented
 /// without violating MoonBit's foreign-trait implementation rule.
 pub struct TomlValue {
+  /// The wrapped upstream TOML value, exposed as a public readonly field.
   value : @upstream_toml.TomlValue
 } derive(Eq, Debug)
 

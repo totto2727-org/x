@@ -7,7 +7,17 @@
 ///
 /// This trait is open so downstream value types can define their own copy
 /// semantics.
+///
+/// ```mbt check
+/// test {
+///   let source = [1, 2]
+///   let copied = Copy::copy(source)
+///   copied[0] = 3
+///   debug_inspect((source, copied), content="([1, 2], [3, 2])")
+/// }
+/// ```
 pub(open) trait Copy {
+  /// Produces a logically independent value according to the implementation's copy policy.
   fn copy(Self) -> Self
 }
 

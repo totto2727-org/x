@@ -4,14 +4,18 @@
 /// `join` accepts a relative path so implementations can preserve their path
 /// form without revalidating the result.
 pub(open) trait Path {
+  /// Parses and normalizes a string, raising when it does not match the implementation's absolute or relative form.
   fn from_string(String) -> Self raise
+  /// Returns the normalized filesystem-path string.
   fn to_string(Self) -> String
+  /// Joins a normalized relative path while preserving the receiver's path form.
   fn join(Self, RelativePath) -> Self
 }
 
 ///|
 /// A normalized absolute filesystem path.
 pub struct AbsolutePath {
+  /// The normalized absolute path, exposed as a public readonly field.
   path : @moon_path.Path
 } derive(Debug, Eq)
 
@@ -56,6 +60,7 @@ pub impl @json.FromJson for AbsolutePath with fn from_json(json, path) {
 ///|
 /// A normalized relative filesystem path.
 pub struct RelativePath {
+  /// The normalized relative path, exposed as a public readonly field.
   path : @moon_path.Path
 } derive(Debug, Eq)
 
