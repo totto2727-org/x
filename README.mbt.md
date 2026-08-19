@@ -9,8 +9,10 @@ This document is canonical `README.mbt.md`; maintain `README.md` as the relative
 After completing the setup below, call the imported package through its alias. For example, flatten a JSON object with JSON Pointer paths:
 
 ```moonbit
-fn flatten_name() -> Map[String, Json] raise @x_json.FlattenJsonError {
-  @x_json.flatten({ "name": "Ada" }, @x_json.JsonPointer)
+test "flatten JSON with JSON Pointer paths" {
+  assert_eq(@x_json.flatten({ "name": "Ada" }, @x_json.JsonPointer), {
+    "/name": "Ada",
+  })
 }
 ```
 
