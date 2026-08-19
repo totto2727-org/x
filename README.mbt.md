@@ -6,10 +6,12 @@ This document is canonical `README.mbt.md`; maintain `README.md` as the relative
 
 ## Usage
 
-Add the module, then import only the package that owns the needed behavior.
+After completing the setup below, call the imported package through its alias. For example, flatten a JSON object with JSON Pointer paths:
 
-```bash
-moon add totto2727/x
+```moonbit
+fn flatten_name() -> Map[String, Json] raise @x_json.FlattenJsonError {
+  @x_json.flatten({ "name": "Ada" }, @x_json.JsonPointer)
+}
 ```
 
 Use [`copy`](./src/copy/README.mbt.md) for explicit logical-copy semantics, [`path`](./src/path/README.mbt.md) for normalized path values, [`json`](./src/json/README.mbt.md) for flattening and reconstruction, [`yaml`](./src/yaml/README.mbt.md) for YAML JSON conversion, and [`toml`](./src/toml/README.mbt.md) for TOML JSON conversion.
@@ -33,10 +35,12 @@ Use [`copy`](./src/copy/README.mbt.md) for explicit logical-copy semantics, [`pa
 moon add totto2727/x
 ```
 
-2. Import one published subpackage, for example `totto2727/x/json`.
+2. Import one published package in the consumer package's `moon.pkg`, for example `totto2727/x/json`.
 
 ```moonbit
-import "totto2727/x/json"
+import {
+  "totto2727/x/json" @x_json,
+}
 ```
 
 ## API
