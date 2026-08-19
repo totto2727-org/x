@@ -6,9 +6,23 @@ Wraps upstream TOML values so they can use MoonBit's standard JSON conversion tr
 
 ```mbt check
 ///|
-test {
-  let value : TomlValue = @json.from_json(@json.parse("42"))
-  assert_eq(value.to_json().stringify(), "42")
+test "convert a parsed TOML configuration to JSON" {
+  let configuration = TomlValue::TomlValue(
+    @upstream_toml.parse(
+      (
+        #|title = "example"
+        #|enabled = true
+        #|
+        #|[owner]
+        #|name = "Ada"
+      ),
+    ),
+  )
+  @json.json_inspect(configuration.to_json(), content={
+    "title": "example",
+    "enabled": true,
+    "owner": { "name": "Ada" },
+  })
 }
 ```
 

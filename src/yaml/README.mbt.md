@@ -6,9 +6,23 @@ Wraps upstream YAML values so they can use MoonBit's standard JSON conversion tr
 
 ```mbt check
 ///|
-test {
-  let value : Yaml = @json.from_json(@json.parse("42"))
-  assert_eq(value.to_json().stringify(), "42")
+test "convert a structured JSON value to YAML and back" {
+  let configuration : Yaml = @json.from_json(
+    @json.parse(
+      (
+        #|{
+        #|  "name": "example",
+        #|  "enabled": true,
+        #|  "items": ["a", null]
+        #|}
+      ),
+    ),
+  )
+  @json.json_inspect(configuration.to_json(), content={
+    "name": "example",
+    "enabled": true,
+    "items": ["a", null],
+  })
 }
 ```
 
