@@ -2,8 +2,6 @@
 
 Focused MoonBit utility packages for logical copying, validated filesystem paths, JSON flattening, and JSON conversions for YAML and TOML values.
 
-This document is canonical `README.mbt.md`; maintain `README.md` as the relative symlink `README.md -> README.mbt.md`.
-
 ## Usage
 
 After completing the setup below, call the imported package through its alias. For example, flatten a JSON object with JSON Pointer paths:
