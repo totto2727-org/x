@@ -42,6 +42,9 @@ pub impl ToJson for Yaml with fn to_json(self) {
 }
 
 ///|
+pub extend Yaml with ToJson::{to_json}
+
+///|
 /// Converts JSON values into the corresponding flat wrapped YAML value.
 ///
 /// JSON numbers with an integer representation become `Yaml::Integer`; all
