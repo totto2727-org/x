@@ -50,6 +50,9 @@ pub impl ToJson for TomlValue with fn to_json(self) {
 }
 
 ///|
+pub extend TomlValue with ToJson::{to_json}
+
+///|
 /// Converts flat JSON values into wrapped TOML values.
 ///
 /// JSON strings always become `TomlString`; date-time type information is not
