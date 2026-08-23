@@ -23,7 +23,7 @@ Use [`copy`](./src/copy/README.mbt.md) for explicit logical-copy semantics, [`pa
 
 ## Prerequisites
 
-- **MoonBit**: Use a current stable toolchain compatible with version `0.6.0` of this module.
+- **MoonBit**: Use a current stable toolchain compatible with version `0.6.1` of this module.
 
 ## Setup
 

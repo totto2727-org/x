@@ -33,6 +33,9 @@ pub impl Path for AbsolutePath with fn from_string(value) {
 }
 
 ///|
+pub extend AbsolutePath with Path::{from_string, to_string}
+
+///|
 pub impl Path for AbsolutePath with fn to_string(self) {
   self.path.to_string()
 }
@@ -48,6 +51,9 @@ pub impl Path for AbsolutePath with fn join(self, relative) {
 pub impl ToJson for AbsolutePath with fn to_json(self) {
   self.path.to_string().to_json()
 }
+
+///|
+pub extend AbsolutePath with ToJson::{to_json}
 
 ///|
 pub impl @json.FromJson for AbsolutePath with fn from_json(json, path) {
@@ -78,6 +84,9 @@ pub impl Path for RelativePath with fn from_string(value) {
 }
 
 ///|
+pub extend RelativePath with Path::{from_string, to_string}
+
+///|
 pub impl Path for RelativePath with fn to_string(self) {
   self.path.to_string()
 }
@@ -93,6 +102,9 @@ pub impl Path for RelativePath with fn join(self, relative) {
 pub impl ToJson for RelativePath with fn to_json(self) {
   self.path.to_string().to_json()
 }
+
+///|
+pub extend RelativePath with ToJson::{to_json}
 
 ///|
 pub impl @json.FromJson for RelativePath with fn from_json(json, path) {
