@@ -4,17 +4,13 @@ Focused MoonBit utility packages for logical copying, validated filesystem paths
 
 ## Usage
 
-After completing the setup below, call the imported package through its alias. For example, flatten a JSON object with JSON Pointer paths:
+Choose the checked workflow that matches the utility task:
 
-```moonbit
-test "flatten JSON with JSON Pointer paths" {
-  assert_eq(@x_json.flatten({ "name": "Ada" }, @x_json.JsonPointer), {
-    "/name": "Ada",
-  })
-}
-```
-
-Use [`copy`](./src/copy/README.mbt.md) for explicit logical-copy semantics, [`path`](./src/path/README.mbt.md) for normalized path values, [`json`](./src/json/README.mbt.md) for flattening and reconstruction, [`yaml`](./src/yaml/README.mbt.md) for YAML JSON conversion, and [`toml`](./src/toml/README.mbt.md) for TOML JSON conversion.
+- [`copy`](./src/copy/README.mbt.md#usage) creates an independent mutable copy while leaving the original value unchanged.
+- [`path`](./src/path/README.mbt.md#usage) resolves and normalizes an absolute and relative filesystem path.
+- [`json`](./src/json/README.mbt.md#usage) flattens a nested document and reconstructs the original structure.
+- [`yaml`](./src/yaml/README.mbt.md#usage) preserves nested configuration values through YAML-backed JSON conversion.
+- [`toml`](./src/toml/README.mbt.md#usage) parses a structured TOML configuration into nested JSON.
 
 ## Key features
 
@@ -35,13 +31,15 @@ Use [`copy`](./src/copy/README.mbt.md) for explicit logical-copy semantics, [`pa
 moon add totto2727/x
 ```
 
-2. Import one published package in the consumer package's `moon.pkg`, for example `totto2727/x/json`.
+2. Add only the selected package entry inside the consumer package's `import { ... }` declaration in `moon.pkg`.
 
-```moonbit
-import {
-  "totto2727/x/json" @x_json,
-}
-```
+| Package | `moon.pkg` entry |
+| --- | --- |
+| `copy` | `"totto2727/x/copy" @x_copy` |
+| `path` | `"totto2727/x/path" @x_path` |
+| `json` | `"totto2727/x/json" @x_json` |
+| `yaml` | `"totto2727/x/yaml" @x_yaml` |
+| `toml` | `"totto2727/x/toml" @x_toml` |
 
 ## API
 

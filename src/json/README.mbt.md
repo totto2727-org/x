@@ -2,15 +2,17 @@
 
 Flattens `Json` values into path-keyed leaves and reconstructs them with bounded, typed validation. See the [module README](../../README.mbt.md#setup) for consumer setup and package imports.
 
-## Reconstruction
+## Usage
+
+Flatten a nested document for path-keyed storage, then reconstruct the original structure.
 
 ```mbt check
 ///|
 test {
-  let flattened : Map[String, Json] = { "/users/0/name": "Ada" }
-  assert_eq(from_flatten_json(flattened, JsonPointer), {
-    "users": [{ "name": "Ada" }],
-  })
+  let source : Json = { "users": [{ "name": "Ada" }] }
+  let flattened = flatten(source, JsonPointer)
+  assert_eq(flattened, { "/users/0/name": "Ada" })
+  assert_eq(from_flatten_json(flattened, JsonPointer), source)
 }
 ```
 

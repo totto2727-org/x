@@ -2,7 +2,9 @@
 
 Wraps upstream TOML values so they can use MoonBit's standard JSON conversion traits without violating foreign-trait rules. See the [module README](../../README.mbt.md#setup) for consumer setup and package imports.
 
-## TOML conversion
+## Usage
+
+Parse a structured TOML configuration and expose its nested values through standard JSON conversion.
 
 ```mbt check
 ///|

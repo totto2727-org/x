@@ -2,7 +2,9 @@
 
 Provides normalized absolute and relative filesystem path value types that preserve their form through parsing, joining, and JSON conversion. See the [module README](../../README.mbt.md#setup) for consumer setup and package imports.
 
-## Normalized joins
+## Usage
+
+Resolve a relative source path against a workspace while normalizing parent-directory segments.
 
 ```mbt check
 ///|

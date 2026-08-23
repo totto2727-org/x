@@ -2,9 +2,9 @@
 
 Defines explicit logical-copy behavior for built-in MoonBit values and downstream types that need an independent mutable result. See the [module README](../../README.mbt.md#setup) for consumer setup and package imports.
 
-## Logical copying
+## Usage
 
-`Copy::copy` produces an independent logical value according to its implementation's copy policy:
+Copy a mutable collection before changing it so the original value remains available for comparison or reuse.
 
 ```mbt check
 ///|

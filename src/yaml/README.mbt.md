@@ -2,7 +2,9 @@
 
 Wraps upstream YAML values so they can use MoonBit's standard JSON conversion traits without violating foreign-trait rules. See the [module README](../../README.mbt.md#setup) for consumer setup and package imports.
 
-## YAML conversion
+## Usage
+
+Convert structured JSON-compatible configuration through the YAML wrapper while preserving nested values.
 
 ```mbt check
 ///|
