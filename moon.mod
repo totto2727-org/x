@@ -1,6 +1,6 @@
 name = "totto2727/x"
 
-version = "0.6.1"
+version = "0.7.0"
 
 import {
   "moonbitlang/x@0.5.1",
@@ -14,8 +14,8 @@ repository = "https://github.com/totto2727-org/x"
 
 license = "MIT"
 
-keywords = [ "copy", "path", "trait", "moonbit" ]
+keywords = [ "copy", "path", "ring-buffer", "trait", "moonbit" ]
 
-description = "Focused utility traits and value types for MoonBit"
+description = "Focused utility collections, traits, and value types for MoonBit"
 
 source = "./src"

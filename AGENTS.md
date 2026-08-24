@@ -5,6 +5,7 @@
 ```text
 .github/workflows/  Validation and Mooncakes publishing workflows
 src/copy/            Independent logical-copy trait, tests, and package README
+src/ring_buffer/     Fixed-capacity FIFO collection, tests, and package README
 src/json/            JSON flattening, reconstruction, path formats, and package README
 src/path/            Validated absolute and relative path values and package README
 src/toml/            Owned TOML-to-JSON conversion wrapper and package README
@@ -43,6 +44,7 @@ README.md            Relative symlink to README.mbt.md
 ### Package boundaries
 
 - `copy` is independent of the serialization and path packages and defines explicit logical-copy behavior.
+- `ring_buffer` wraps the core deque behind fixed-capacity FIFO operations and logical-order access.
 - `path` wraps `moonbitlang/x/path.Path`, normalizes at construction, and preserves absolute or relative form through typed operations.
 - `json` owns path parsing plus bounded flattening and reconstruction over core `Json` values.
 - `yaml` and `toml` use owned wrapper types because MoonBit does not permit implementing a foreign trait for a foreign type.
