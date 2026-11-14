@@ -9,9 +9,12 @@ Resolve a relative source path against a workspace while normalizing parent-dire
 ```mbt check
 ///|
 test {
-  let base = AbsolutePath::from_string("/workspace/project")
-  let child = RelativePath::from_string("src/../README.md")
-  assert_eq(Path::join(base, child).to_string(), "/workspace/project/README.md")
+  let base = @path.AbsolutePath::from_string("/workspace/project")
+  let child = @path.RelativePath::from_string("src/../README.md")
+  assert_eq(
+    @path.Path::join(base, child).to_string(),
+    "/workspace/project/README.md",
+  )
 }
 ```
 

@@ -2,7 +2,3 @@ import {
   "moonbitlang/core/debug",
   "moonbitlang/core/deque",
 }
-
-import {
-  "moonbitlang/core/test",
-} for "test"

@@ -87,9 +87,9 @@ fn parse_javascript_path(
 ///|
 fn parse_bracket_segment(
   chars : Array[Char],
-  start : Int,
+  start : Int32,
   path : String,
-) -> (PathSegment, Int) raise FlattenJsonError {
+) -> (PathSegment, Int32) raise FlattenJsonError {
   let mut index = start + 1
   guard index < chars.length() else { raise InvalidPath(path) }
   if chars[index] == '"' {
