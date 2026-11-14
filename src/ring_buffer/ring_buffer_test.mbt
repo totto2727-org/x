@@ -1,18 +1,19 @@
 ///|
 test "panic_RingBuffer::RingBuffer - rejects zero capacity" {
-  try! ((@ring_buffer.RingBuffer::RingBuffer(0) : @ring_buffer.RingBuffer[Int])
+  try! ((@ring_buffer.RingBuffer::RingBuffer(0) : @ring_buffer.RingBuffer[Int32])
   |> ignore)
 }
 
 ///|
 test "panic_RingBuffer::RingBuffer - rejects negative capacity" {
-  try! ((@ring_buffer.RingBuffer::RingBuffer(-1) : @ring_buffer.RingBuffer[Int])
+  try! ((
+    @ring_buffer.RingBuffer::RingBuffer(-1) : @ring_buffer.RingBuffer[Int32])
   |> ignore)
 }
 
 ///|
 test "RingBuffer state - reports an empty fixed-capacity buffer" {
-  let buffer : @ring_buffer.RingBuffer[Int] = @ring_buffer.RingBuffer(3)
+  let buffer : @ring_buffer.RingBuffer[Int32] = @ring_buffer.RingBuffer(3)
   debug_inspect(
     (
       buffer.capacity(),
@@ -29,7 +30,7 @@ test "RingBuffer state - reports an empty fixed-capacity buffer" {
 
 ///|
 test "RingBuffer push - preserves insertion order before reaching capacity" {
-  let buffer : @ring_buffer.RingBuffer[Int] = @ring_buffer.RingBuffer(3)
+  let buffer : @ring_buffer.RingBuffer[Int32] = @ring_buffer.RingBuffer(3)
   buffer.push(1)
   buffer.push(2)
   debug_inspect(buffer.to_array(), content="[1, 2]")
@@ -47,7 +48,7 @@ test "RingBuffer push - overwrites the oldest value when full" {
 
 ///|
 test "RingBuffer push - keeps fixed capacity across repeated overwrites" {
-  let buffer : @ring_buffer.RingBuffer[Int] = @ring_buffer.RingBuffer(3)
+  let buffer : @ring_buffer.RingBuffer[Int32] = @ring_buffer.RingBuffer(3)
   for value in 0..<1000 {
     buffer.push(value)
   }
@@ -134,7 +135,7 @@ test "RingBuffer iter - traverses values from oldest to newest" {
 ///|
 test "RingBuffer iter2 - traverses logical indices from oldest to newest" {
   let buffer = @ring_buffer.RingBuffer::from_array([1, 2, 3, 4], capacity=3)
-  let entries : Array[(Int, Int)] = []
+  let entries : Array[(Int32, Int32)] = []
   buffer.eachi((index, value) => entries.push((index, value)))
   debug_inspect(entries, content="[(0, 2), (1, 3), (2, 4)]")
 }

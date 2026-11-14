@@ -10,7 +10,7 @@ Copy a mutable collection before changing it so the original value remains avail
 ///|
 test {
   let source = [1, 2]
-  let copied = Copy::copy(source)
+  let copied = @copy.Copy::copy(source)
   copied[0] = 3
   debug_inspect((source, copied), content="([1, 2], [3, 2])")
 }

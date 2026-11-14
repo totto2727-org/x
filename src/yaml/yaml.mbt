@@ -1,10 +1,11 @@
 ///|
 /// Owns an upstream YAML value so standard JSON traits can be implemented
 /// without violating MoonBit's foreign-trait implementation rule.
+#derive(Eq, Debug)
 pub struct Yaml {
   /// The wrapped upstream YAML value, exposed as a public readonly field.
   value : @upstream_yaml.Yaml
-} derive(Eq, Debug)
+}
 
 ///|
 /// Wraps an upstream YAML value for standard JSON conversion.

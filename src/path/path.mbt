@@ -14,17 +14,18 @@ pub(open) trait Path {
 
 ///|
 /// A normalized absolute filesystem path.
+#derive(Debug, Eq)
 pub struct AbsolutePath {
   /// The normalized absolute path, exposed as a public readonly field.
   path : @moon_path.Path
-} derive(Debug, Eq)
+}
 
 ///|
 /// Constructs a normalized absolute path.
 pub fn AbsolutePath::AbsolutePath(path : @moon_path.Path) -> AbsolutePath raise {
   let normalized = path.normalize()
   guard normalized.is_absolute() else { fail("absolute path required") }
-  { path: normalized }
+  { path: normalized, }
 }
 
 ///|
@@ -33,7 +34,7 @@ pub impl Path for AbsolutePath with fn from_string(value) {
 }
 
 ///|
-pub extend AbsolutePath with Path::{from_string, to_string}
+pub extend AbsolutePath with Path::{from_string, to_string, join}
 
 ///|
 pub impl Path for AbsolutePath with fn to_string(self) {
@@ -44,12 +45,12 @@ pub impl Path for AbsolutePath with fn to_string(self) {
 pub impl Path for AbsolutePath with fn join(self, relative) {
   // The underlying join normalizes the result. A RelativePath operand preserves
   // the absolute form, so rerunning the raising constructor is unnecessary.
-  AbsolutePath::{ path: self.path.join(relative.path) }
+  AbsolutePath::{ path: self.path.join(relative.path), }
 }
 
 ///|
 pub impl ToJson for AbsolutePath with fn to_json(self) {
-  self.path.to_string().to_json()
+  ToJson::to_json(self.path.to_string())
 }
 
 ///|
@@ -65,17 +66,18 @@ pub impl @json.FromJson for AbsolutePath with fn from_json(json, path) {
 
 ///|
 /// A normalized relative filesystem path.
+#derive(Debug, Eq)
 pub struct RelativePath {
   /// The normalized relative path, exposed as a public readonly field.
   path : @moon_path.Path
-} derive(Debug, Eq)
+}
 
 ///|
 /// Constructs a normalized relative path.
 pub fn RelativePath::RelativePath(path : @moon_path.Path) -> RelativePath raise {
   let normalized = path.normalize()
   guard !normalized.is_absolute() else { fail("relative path required") }
-  { path: normalized }
+  { path: normalized, }
 }
 
 ///|
@@ -84,7 +86,7 @@ pub impl Path for RelativePath with fn from_string(value) {
 }
 
 ///|
-pub extend RelativePath with Path::{from_string, to_string}
+pub extend RelativePath with Path::{from_string, to_string, join}
 
 ///|
 pub impl Path for RelativePath with fn to_string(self) {
@@ -95,12 +97,12 @@ pub impl Path for RelativePath with fn to_string(self) {
 pub impl Path for RelativePath with fn join(self, relative) {
   // The underlying join normalizes the result. A RelativePath operand preserves
   // the relative form, so rerunning the raising constructor is unnecessary.
-  RelativePath::{ path: self.path.join(relative.path) }
+  RelativePath::{ path: self.path.join(relative.path), }
 }
 
 ///|
 pub impl ToJson for RelativePath with fn to_json(self) {
-  self.path.to_string().to_json()
+  ToJson::to_json(self.path.to_string())
 }
 
 ///|

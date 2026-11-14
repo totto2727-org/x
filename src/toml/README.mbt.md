@@ -9,7 +9,7 @@ Parse a structured TOML configuration and expose its nested values through stand
 ```mbt check
 ///|
 test "convert a parsed TOML configuration to JSON" {
-  let configuration = TomlValue::TomlValue(
+  let configuration = @toml.TomlValue::TomlValue(
     @upstream_toml.parse(
       (
         #|title = "example"
