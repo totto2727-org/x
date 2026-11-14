@@ -4,5 +4,4 @@ _build/
 .omo/
 src/**/pkg.generated.mbti
 .DS_Store
-.direnv/
-.omo/
+/tmp/
