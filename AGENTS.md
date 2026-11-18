@@ -65,7 +65,7 @@ README.md            Relative symlink to README.mbt.md
 
 - **MoonBit**: Builds, checks, tests, formats, and packages the module.
 - **Mooncakes**: Publishes and renders the canonical API documentation from source comments.
-- **Nix flakes**: Provide the development toolchain used locally and in CI.
+- **Nix flakes**: Provide the local development toolchain. GitHub Actions installs the SDK through the shared MoonBit setup action.
 - **GitHub Actions**: Run validation and publish main-branch state with the configured repository secret.
 
 ## Package-specific rules
