@@ -8,6 +8,12 @@ pub struct Yaml {
 }
 
 ///|
+pub extend Yaml with Eq::{equal, not_equal}
+
+///|
+pub extend Yaml with Debug::{to_repr}
+
+///|
 /// Wraps an upstream YAML value for standard JSON conversion.
 pub fn Yaml::Yaml(value : @upstream_yaml.Yaml) -> Yaml {
   { value, }
@@ -87,3 +93,6 @@ pub impl @json.FromJson for Yaml with fn from_json(json, path) {
     }
   }
 }
+
+///|
+pub extend Yaml with @json.FromJson::{from_json}

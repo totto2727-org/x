@@ -8,6 +8,12 @@ pub struct TomlValue {
 }
 
 ///|
+pub extend TomlValue with Eq::{equal, not_equal}
+
+///|
+pub extend TomlValue with Debug::{to_repr}
+
+///|
 /// Wraps an upstream TOML value for standard JSON conversion.
 pub fn TomlValue::TomlValue(value : @upstream_toml.TomlValue) -> TomlValue {
   { value, }
@@ -97,3 +103,6 @@ pub impl @json.FromJson for TomlValue with fn from_json(json, path) {
     }
   }
 }
+
+///|
+pub extend TomlValue with @json.FromJson::{from_json}

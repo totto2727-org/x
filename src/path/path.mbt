@@ -21,6 +21,12 @@ pub struct AbsolutePath {
 }
 
 ///|
+pub extend AbsolutePath with Eq::{equal, not_equal}
+
+///|
+pub extend AbsolutePath with Debug::{to_repr}
+
+///|
 /// Constructs a normalized absolute path.
 pub fn AbsolutePath::AbsolutePath(path : @moon_path.Path) -> AbsolutePath raise {
   let normalized = path.normalize()
@@ -65,12 +71,21 @@ pub impl @json.FromJson for AbsolutePath with fn from_json(json, path) {
 }
 
 ///|
+pub extend AbsolutePath with @json.FromJson::{from_json}
+
+///|
 /// A normalized relative filesystem path.
 #derive(Debug, Eq)
 pub struct RelativePath {
   /// The normalized relative path, exposed as a public readonly field.
   path : @moon_path.Path
 }
+
+///|
+pub extend RelativePath with Eq::{equal, not_equal}
+
+///|
+pub extend RelativePath with Debug::{to_repr}
 
 ///|
 /// Constructs a normalized relative path.
@@ -115,3 +130,6 @@ pub impl @json.FromJson for RelativePath with fn from_json(json, path) {
     _ => raise @json.JsonDecodeError((path, "relative path required"))
   }
 }
+
+///|
+pub extend RelativePath with @json.FromJson::{from_json}

@@ -7,6 +7,12 @@ pub(all) suberror RingBufferError {
 }
 
 ///|
+pub extend RingBufferError with Eq::{equal, not_equal}
+
+///|
+pub extend RingBufferError with @debug.Debug::{to_repr}
+
+///|
 /// A fixed-capacity FIFO collection that overwrites its oldest value when full.
 ///
 /// The representation is private so callers cannot bypass the fixed-capacity
@@ -361,10 +367,16 @@ pub impl[A : Eq] Eq for RingBuffer[A] with fn equal(self, other) {
 }
 
 ///|
+pub extend RingBuffer with Eq::{equal, not_equal}
+
+///|
 /// Orders ring buffers by length, then compares equal-length logical sequences element by element.
 pub impl[A : Compare] Compare for RingBuffer[A] with fn compare(self, other) {
   self.deque.compare(other.deque)
 }
+
+///|
+pub extend RingBuffer with Compare::{compare, op_lt, op_le, op_gt, op_ge}
 
 ///|
 /// Hashes the logical value sequence without including capacity.
@@ -373,10 +385,16 @@ pub impl[A : Hash] Hash for RingBuffer[A] with fn hash_combine(self, hasher) {
 }
 
 ///|
+pub extend RingBuffer with Hash::{hash, hash_combine}
+
+///|
 /// Converts the logical value sequence to a JSON array.
 pub impl[A : ToJson] ToJson for RingBuffer[A] with fn to_json(self) {
   ToJson::to_json(self.deque)
 }
+
+///|
+pub extend RingBuffer with ToJson::{to_json}
 
 ///|
 /// Formats the logical value sequence for debugging.
@@ -386,3 +404,6 @@ pub impl[A : @debug.Debug] @debug.Debug for RingBuffer[A] with fn to_repr(self) 
     @debug.Repr::array(self.to_array().map(value => @debug.Repr(value))),
   )
 }
+
+///|
+pub extend RingBuffer with @debug.Debug::{to_repr}
