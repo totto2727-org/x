@@ -1,11 +1,11 @@
 name = "totto2727/x"
 
-version = "0.7.0"
+version = "0.8.0"
 
 import {
   "moonbitlang/x@0.5.1",
-  "moonbit-community/yaml@0.0.6",
-  "bobzhang/toml@0.4.3",
+  "moonbit-community/yaml@0.0.9",
+  "moonbit-community/toml@0.5.1",
 }
 
 readme = "README.mbt.md"
