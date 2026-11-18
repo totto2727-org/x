@@ -9,6 +9,12 @@ pub(all) enum PathFormat {
 }
 
 ///|
+pub extend PathFormat with Eq::{equal, not_equal}
+
+///|
+pub extend PathFormat with Debug::{to_repr}
+
+///|
 /// Controls whether arrays are expanded into indexed paths.
 #derive(Eq, Debug)
 pub(all) enum ArrayMode {
@@ -17,6 +23,12 @@ pub(all) enum ArrayMode {
   /// Preserves each array as a single `Json` leaf.
   Preserve
 }
+
+///|
+pub extend ArrayMode with Eq::{equal, not_equal}
+
+///|
+pub extend ArrayMode with Debug::{to_repr}
 
 ///|
 /// A failure while decoding or reconstructing flattened JSON paths.
@@ -37,6 +49,12 @@ pub(all) suberror FlattenJsonError {
   /// Reconstructed array indices contain a gap.
   ArrayIndexGap(String)
 }
+
+///|
+pub extend FlattenJsonError with Eq::{equal, not_equal}
+
+///|
+pub extend FlattenJsonError with Debug::{to_repr}
 
 ///|
 priv enum BuildNode {
