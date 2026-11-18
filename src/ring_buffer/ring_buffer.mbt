@@ -1,9 +1,16 @@
 ///|
 /// A failure raised while constructing a fixed-capacity ring buffer.
+#derive(Eq, Debug)
 pub(all) suberror RingBufferError {
   /// The requested capacity was zero or negative.
-  InvalidCapacity(Int)
-} derive(Eq, Debug)
+  InvalidCapacity(Int32)
+}
+
+///|
+pub extend RingBufferError with Eq::{equal, not_equal}
+
+///|
+pub extend RingBufferError with @debug.Debug::{to_repr}
 
 ///|
 /// A fixed-capacity FIFO collection that overwrites its oldest value when full.
@@ -21,7 +28,7 @@ pub struct RingBuffer[A] {
 }
 
 ///|
-fn[A] empty_ring_buffer(capacity : Int) -> RingBuffer[A] {
+fn[A] empty_ring_buffer(capacity : Int32) -> RingBuffer[A] {
   let deque : @deque.Deque[A] = @deque.Deque([], capacity~)
   RingBuffer::{ deque, }
 }
@@ -29,7 +36,7 @@ fn[A] empty_ring_buffer(capacity : Int) -> RingBuffer[A] {
 ///|
 /// Constructs an empty ring buffer with a positive fixed capacity.
 pub fn[A] RingBuffer::RingBuffer(
-  capacity : Int,
+  capacity : Int32,
 ) -> RingBuffer[A] raise RingBufferError {
   guard capacity > 0 else { raise RingBufferError::InvalidCapacity(capacity) }
   empty_ring_buffer(capacity)
@@ -42,7 +49,7 @@ pub fn[A] RingBuffer::RingBuffer(
 /// `capacity` elements are retained.
 pub fn[A] RingBuffer::from_array(
   values : ArrayView[A],
-  capacity~ : Int,
+  capacity~ : Int32,
 ) -> RingBuffer[A] raise RingBufferError {
   let buffer = RingBuffer::RingBuffer(capacity)
   for value in values {
@@ -58,7 +65,7 @@ pub fn[A] RingBuffer::from_array(
 /// `capacity` elements are retained.
 pub fn[A] RingBuffer::from_iter(
   values : Iter[A],
-  capacity~ : Int,
+  capacity~ : Int32,
 ) -> RingBuffer[A] raise RingBufferError {
   let buffer = RingBuffer::RingBuffer(capacity)
   for value in values {
@@ -96,13 +103,13 @@ pub fn[A] RingBuffer::peek_latest(self : RingBuffer[A]) -> A? {
 
 ///|
 /// Returns the fixed maximum number of values held by the buffer.
-pub fn[A] RingBuffer::capacity(self : RingBuffer[A]) -> Int {
+pub fn[A] RingBuffer::capacity(self : RingBuffer[A]) -> Int32 {
   self.deque.capacity()
 }
 
 ///|
 /// Returns the current number of values.
-pub fn[A] RingBuffer::length(self : RingBuffer[A]) -> Int {
+pub fn[A] RingBuffer::length(self : RingBuffer[A]) -> Int32 {
   self.deque.length()
 }
 
@@ -126,7 +133,7 @@ pub fn[A] RingBuffer::clear(self : RingBuffer[A]) -> Unit {
 
 ///|
 /// Returns the value at a logical insertion-order index, or `None` when out of bounds.
-pub fn[A] RingBuffer::get(self : RingBuffer[A], index : Int) -> A? {
+pub fn[A] RingBuffer::get(self : RingBuffer[A], index : Int32) -> A? {
   self.deque.get(index)
 }
 
@@ -134,14 +141,14 @@ pub fn[A] RingBuffer::get(self : RingBuffer[A], index : Int) -> A? {
 /// Returns the value at a logical insertion-order index.
 ///
 /// Panics when `index` is negative or not less than `length()`.
-pub fn[A] RingBuffer::at(self : RingBuffer[A], index : Int) -> A {
+pub fn[A] RingBuffer::at(self : RingBuffer[A], index : Int32) -> A {
   self.deque[index]
 }
 
 ///|
 /// Provides indexed access in logical insertion order.
 #alias("_[_]")
-pub fn[A] RingBuffer::indexed_get(self : RingBuffer[A], index : Int) -> A {
+pub fn[A] RingBuffer::indexed_get(self : RingBuffer[A], index : Int32) -> A {
   self.at(index)
 }
 
@@ -149,7 +156,11 @@ pub fn[A] RingBuffer::indexed_get(self : RingBuffer[A], index : Int) -> A {
 /// Replaces the value at a logical insertion-order index without changing order.
 ///
 /// Panics when `index` is negative or not less than `length()`.
-pub fn[A] RingBuffer::set(self : RingBuffer[A], index : Int, value : A) -> Unit {
+pub fn[A] RingBuffer::set(
+  self : RingBuffer[A],
+  index : Int32,
+  value : A,
+) -> Unit {
   self.deque[index] = value
 }
 
@@ -158,7 +169,7 @@ pub fn[A] RingBuffer::set(self : RingBuffer[A], index : Int, value : A) -> Unit 
 #alias("_[_]=_")
 pub fn[A] RingBuffer::indexed_set(
   self : RingBuffer[A],
-  index : Int,
+  index : Int32,
   value : A,
 ) -> Unit {
   self.set(index, value)
@@ -172,7 +183,7 @@ pub fn[A] RingBuffer::iter(self : RingBuffer[A]) -> Iter[A] {
 
 ///|
 /// Returns an iterator of logical indices and values from oldest to newest.
-pub fn[A] RingBuffer::iter2(self : RingBuffer[A]) -> Iter2[Int, A] {
+pub fn[A] RingBuffer::iter2(self : RingBuffer[A]) -> Iter2[Int32, A] {
   self.deque.iter2()
 }
 
@@ -186,7 +197,7 @@ pub fn[A] RingBuffer::each(self : RingBuffer[A], action : (A) -> Unit) -> Unit {
 /// Calls `action` for each logical index and value from oldest to newest.
 pub fn[A] RingBuffer::eachi(
   self : RingBuffer[A],
-  action : (Int, A) -> Unit,
+  action : (Int32, A) -> Unit,
 ) -> Unit {
   self.deque.eachi(action)
 }
@@ -199,7 +210,7 @@ pub fn[A] RingBuffer::rev_iter(self : RingBuffer[A]) -> Iter[A] {
 
 ///|
 /// Returns an iterator of logical indices and values from newest to oldest.
-pub fn[A] RingBuffer::rev_iter2(self : RingBuffer[A]) -> Iter2[Int, A] {
+pub fn[A] RingBuffer::rev_iter2(self : RingBuffer[A]) -> Iter2[Int32, A] {
   self.deque.rev_iter2()
 }
 
@@ -216,7 +227,7 @@ pub fn[A] RingBuffer::rev_each(
 /// Calls `action` for each logical index and value from newest to oldest.
 pub fn[A] RingBuffer::rev_eachi(
   self : RingBuffer[A],
-  action : (Int, A) -> Unit,
+  action : (Int32, A) -> Unit,
 ) -> Unit {
   self.deque.rev_eachi(action)
 }
@@ -247,7 +258,7 @@ pub fn[A : Eq] RingBuffer::contains(self : RingBuffer[A], value : A) -> Bool {
 
 ///|
 /// Returns the logical index of the first matching value, or `None` when absent.
-pub fn[A : Eq] RingBuffer::search(self : RingBuffer[A], value : A) -> Int? {
+pub fn[A : Eq] RingBuffer::search(self : RingBuffer[A], value : A) -> Int32? {
   self.deque.search(value)
 }
 
@@ -258,7 +269,7 @@ pub fn[A : Eq] RingBuffer::search(self : RingBuffer[A], value : A) -> Int? {
 pub fn[A : Compare] RingBuffer::binary_search(
   self : RingBuffer[A],
   value : A,
-) -> Result[Int, Int] {
+) -> Result[Int32, Int32] {
   self.deque.binary_search(value)
 }
 
@@ -268,8 +279,8 @@ pub fn[A : Compare] RingBuffer::binary_search(
 /// The callback must describe a sequence sorted around the requested value.
 pub fn[A] RingBuffer::binary_search_by(
   self : RingBuffer[A],
-  compare : (A) -> Int,
-) -> Result[Int, Int] {
+  compare : (A) -> Int32,
+) -> Result[Int32, Int32] {
   self.deque.binary_search_by(compare)
 }
 
@@ -300,7 +311,7 @@ pub fn[A, B] RingBuffer::map(
 /// Maps every logical index and value into a buffer with the same fixed capacity.
 pub fn[A, B] RingBuffer::mapi(
   self : RingBuffer[A],
-  transform : (Int, A) -> B,
+  transform : (Int32, A) -> B,
 ) -> RingBuffer[B] {
   let mapped = empty_ring_buffer(self.capacity())
   self.eachi((index, value) => mapped.push(transform(index, value)))
@@ -356,10 +367,16 @@ pub impl[A : Eq] Eq for RingBuffer[A] with fn equal(self, other) {
 }
 
 ///|
+pub extend RingBuffer with Eq::{equal, not_equal}
+
+///|
 /// Orders ring buffers by length, then compares equal-length logical sequences element by element.
 pub impl[A : Compare] Compare for RingBuffer[A] with fn compare(self, other) {
   self.deque.compare(other.deque)
 }
+
+///|
+pub extend RingBuffer with Compare::{compare, op_lt, op_le, op_gt, op_ge}
 
 ///|
 /// Hashes the logical value sequence without including capacity.
@@ -368,10 +385,16 @@ pub impl[A : Hash] Hash for RingBuffer[A] with fn hash_combine(self, hasher) {
 }
 
 ///|
+pub extend RingBuffer with Hash::{hash, hash_combine}
+
+///|
 /// Converts the logical value sequence to a JSON array.
 pub impl[A : ToJson] ToJson for RingBuffer[A] with fn to_json(self) {
   ToJson::to_json(self.deque)
 }
+
+///|
+pub extend RingBuffer with ToJson::{to_json}
 
 ///|
 /// Formats the logical value sequence for debugging.
@@ -381,3 +404,6 @@ pub impl[A : @debug.Debug] @debug.Debug for RingBuffer[A] with fn to_repr(self) 
     @debug.Repr::array(self.to_array().map(value => @debug.Repr(value))),
   )
 }
+
+///|
+pub extend RingBuffer with @debug.Debug::{to_repr}

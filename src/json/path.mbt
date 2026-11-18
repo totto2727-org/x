@@ -1,7 +1,7 @@
 ///|
 priv enum PathSegment {
   Key(String)
-  Index(Int)
+  Index(Int32)
 }
 
 ///|

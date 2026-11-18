@@ -9,7 +9,7 @@ Convert structured JSON-compatible configuration through the YAML wrapper while 
 ```mbt check
 ///|
 test "convert a structured JSON value to YAML and back" {
-  let configuration : Yaml = @json.from_json(
+  let configuration : @yaml.Yaml = @json.from_json(
     @json.parse(
       (
         #|{

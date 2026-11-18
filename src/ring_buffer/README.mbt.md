@@ -9,7 +9,9 @@ Retain the three most recent measurements while consuming them in insertion orde
 ```mbt check
 ///|
 test {
-  let measurements : RingBuffer[Int] = RingBuffer::RingBuffer(3)
+  let measurements : @ring_buffer.RingBuffer[Int32] = @ring_buffer.RingBuffer::RingBuffer(
+    3,
+  )
   for value in [10, 20, 30, 40] {
     measurements.push(value)
   }

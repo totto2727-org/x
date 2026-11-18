@@ -23,7 +23,7 @@ Choose the checked workflow that matches the utility task:
 
 ## Prerequisites
 
-- **MoonBit**: Use a current stable toolchain compatible with version `0.7.0` of this module.
+- **MoonBit**: Use `moon 0.1.20261117` or a compatible stable toolchain.
 
 ## Setup
 

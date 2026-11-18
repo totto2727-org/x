@@ -2,6 +2,8 @@
 
 Wraps upstream TOML values so they can use MoonBit's standard JSON conversion traits without violating foreign-trait rules. See the [module README](../../README.mbt.md#setup) for consumer setup and package imports.
 
+Starting with `totto2727/x` 0.8.0, the wrapper accepts `moonbit-community/toml.TomlValue` instead of `bobzhang/toml.TomlValue`. Update direct TOML imports to `moonbit-community/toml` before passing parsed values to the wrapper.
+
 ## Usage
 
 Parse a structured TOML configuration and expose its nested values through standard JSON conversion.
@@ -9,7 +11,7 @@ Parse a structured TOML configuration and expose its nested values through stand
 ```mbt check
 ///|
 test "convert a parsed TOML configuration to JSON" {
-  let configuration = TomlValue::TomlValue(
+  let configuration = @toml.TomlValue::TomlValue(
     @upstream_toml.parse(
       (
         #|title = "example"

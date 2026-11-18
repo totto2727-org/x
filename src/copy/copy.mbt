@@ -11,7 +11,7 @@
 /// ```mbt check
 /// test {
 ///   let source = [1, 2]
-///   let copied = Copy::copy(source)
+///   let copied = @copy.Copy::copy(source)
 ///   copied[0] = 3
 ///   debug_inspect((source, copied), content="([1, 2], [3, 2])")
 /// }
@@ -47,7 +47,7 @@ pub impl Copy for Int16 with fn copy(self) {
 }
 
 ///|
-pub impl Copy for Int with fn copy(self) {
+pub impl Copy for Int32 with fn copy(self) {
   self
 }
 
@@ -62,7 +62,7 @@ pub impl Copy for UInt16 with fn copy(self) {
 }
 
 ///|
-pub impl Copy for UInt with fn copy(self) {
+pub impl Copy for UInt32 with fn copy(self) {
   self
 }
 

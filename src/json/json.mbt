@@ -1,23 +1,38 @@
 ///|
 /// The string representation used for flattened JSON paths.
+#derive(Eq, Debug)
 pub(all) enum PathFormat {
   /// RFC 6901 JSON Pointer, such as `/users/0/name`.
   JsonPointer
   /// JavaScript-style property and index access, such as `users[0].name`.
   JavaScript
-} derive(Eq, Debug)
+}
+
+///|
+pub extend PathFormat with Eq::{equal, not_equal}
+
+///|
+pub extend PathFormat with Debug::{to_repr}
 
 ///|
 /// Controls whether arrays are expanded into indexed paths.
+#derive(Eq, Debug)
 pub(all) enum ArrayMode {
   /// Expands array elements into indexed paths.
   Expand
   /// Preserves each array as a single `Json` leaf.
   Preserve
-} derive(Eq, Debug)
+}
+
+///|
+pub extend ArrayMode with Eq::{equal, not_equal}
+
+///|
+pub extend ArrayMode with Debug::{to_repr}
 
 ///|
 /// A failure while decoding or reconstructing flattened JSON paths.
+#derive(Eq, Debug)
 pub(all) suberror FlattenJsonError {
   /// A flattened leaf contains a non-empty object that must be expanded instead.
   ObjectValue(String)
@@ -26,20 +41,26 @@ pub(all) suberror FlattenJsonError {
   /// A path does not conform to the selected path format.
   InvalidPath(String)
   /// A path exceeds 16,384 UTF-16 code units.
-  PathLengthExceeded(Int)
+  PathLengthExceeded(Int32)
   /// A path exceeds 256 segments.
-  PathDepthExceeded(Int)
+  PathDepthExceeded(Int32)
   /// Multiple flattened paths require incompatible values at the same location.
   PathConflict(String)
   /// Reconstructed array indices contain a gap.
   ArrayIndexGap(String)
-} derive(Eq, Debug)
+}
+
+///|
+pub extend FlattenJsonError with Eq::{equal, not_equal}
+
+///|
+pub extend FlattenJsonError with Debug::{to_repr}
 
 ///|
 priv enum BuildNode {
   Value(Json)
   Object(Map[String, BuildNode])
-  Array(Map[Int, BuildNode])
+  Array(Map[Int32, BuildNode])
 }
 
 ///|
@@ -56,7 +77,7 @@ priv enum BuildNode {
 pub fn flatten(
   json : Json,
   format : PathFormat,
-  array_mode? : ArrayMode = Expand,
+  array_mode~ : ArrayMode = Expand,
 ) -> Map[String, Json] raise FlattenJsonError {
   let flattened : Map[String, Json] = Map([])
   flatten_value(json, [], format, array_mode, flattened)
@@ -124,7 +145,7 @@ pub fn from_flatten_json(
 fn insert_value(
   node : BuildNode?,
   segments : Array[PathSegment],
-  index : Int,
+  index : Int32,
   path : String,
   value : Json,
 ) -> BuildNode raise FlattenJsonError {

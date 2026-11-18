@@ -1,10 +1,17 @@
 ///|
 /// Owns an upstream TOML value so standard JSON traits can be implemented
 /// without violating MoonBit's foreign-trait implementation rule.
+#derive(Eq, Debug)
 pub struct TomlValue {
   /// The wrapped upstream TOML value, exposed as a public readonly field.
   value : @upstream_toml.TomlValue
-} derive(Eq, Debug)
+}
+
+///|
+pub extend TomlValue with Eq::{equal, not_equal}
+
+///|
+pub extend TomlValue with Debug::{to_repr}
 
 ///|
 /// Wraps an upstream TOML value for standard JSON conversion.
@@ -96,3 +103,6 @@ pub impl @json.FromJson for TomlValue with fn from_json(json, path) {
     }
   }
 }
+
+///|
+pub extend TomlValue with @json.FromJson::{from_json}

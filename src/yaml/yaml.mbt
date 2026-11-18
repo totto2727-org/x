@@ -1,10 +1,17 @@
 ///|
 /// Owns an upstream YAML value so standard JSON traits can be implemented
 /// without violating MoonBit's foreign-trait implementation rule.
+#derive(Eq, Debug)
 pub struct Yaml {
   /// The wrapped upstream YAML value, exposed as a public readonly field.
   value : @upstream_yaml.Yaml
-} derive(Eq, Debug)
+}
+
+///|
+pub extend Yaml with Eq::{equal, not_equal}
+
+///|
+pub extend Yaml with Debug::{to_repr}
 
 ///|
 /// Wraps an upstream YAML value for standard JSON conversion.
@@ -86,3 +93,6 @@ pub impl @json.FromJson for Yaml with fn from_json(json, path) {
     }
   }
 }
+
+///|
+pub extend Yaml with @json.FromJson::{from_json}

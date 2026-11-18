@@ -1,12 +1,12 @@
 ///|
 priv struct MutableBox {
-  mut value : Int
-  values : Array[Int]
+  mut value : Int32
+  values : Array[Int32]
 }
 
 ///|
 impl @copy.Copy for MutableBox with fn copy(self) {
-  MutableBox::{ value: self.value, values: @copy.Copy::copy(self.values) }
+  MutableBox::{ value: self.value, values: @copy.Copy::copy(self.values), }
 }
 
 ///|
@@ -16,7 +16,7 @@ test "Copy::copy - copies an immutable value" {
 
 ///|
 test "Copy::copy - recursively copies composite values" {
-  let source : Result[FixedArray[Array[Int]]?, String] = Ok(Some([[1]]))
+  let source : Result[FixedArray[Array[Int32]]?, String] = Ok(Some([[1]]))
   let copied = @copy.Copy::copy(source)
   match (source, copied) {
     (Ok(Some(source_values)), Ok(Some(copied_values))) => {
@@ -32,7 +32,7 @@ test "Copy::copy - recursively copies composite values" {
 
 ///|
 test "MutableBox Copy::copy - uses the type-defined copy policy" {
-  let source = MutableBox::{ value: 1, values: [1] }
+  let source = MutableBox::{ value: 1, values: [1], }
   let copied = @copy.Copy::copy(source)
   copied.value = 2
   copied.values[0] = 2

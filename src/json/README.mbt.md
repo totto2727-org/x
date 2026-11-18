@@ -10,9 +10,9 @@ Flatten a nested document for path-keyed storage, then reconstruct the original 
 ///|
 test {
   let source : Json = { "users": [{ "name": "Ada" }] }
-  let flattened = flatten(source, JsonPointer)
+  let flattened = @json.flatten(source, JsonPointer)
   assert_eq(flattened, { "/users/0/name": "Ada" })
-  assert_eq(from_flatten_json(flattened, JsonPointer), source)
+  assert_eq(@json.from_flatten_json(flattened, JsonPointer), source)
 }
 ```
 
