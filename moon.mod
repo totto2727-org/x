@@ -1,8 +1,9 @@
 name = "totto2727/x"
 
-version = "0.8.0"
+version = "0.9.0"
 
 import {
+  "Yoorkin/any@0.2.1",
   "moonbitlang/x@0.5.1",
   "moonbit-community/yaml@0.0.9",
   "moonbit-community/toml@0.5.1",
