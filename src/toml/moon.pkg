@@ -1,7 +1,0 @@
-import {
-  "moonbit-community/toml" @upstream_toml,
-  "moonbit-community/toml/datetime" @upstream_datetime,
-  "moonbitlang/core/double",
-  "moonbitlang/core/json",
-  "moonbitlang/core/string",
-}
