@@ -24,6 +24,13 @@ test {
 - Permits joins only with validated `RelativePath` values.
 - Encodes values as normalized JSON strings and rejects mismatched forms on decoding.
 
+## Migrate from 0.10
+
+In version 0.11, the `AbsolutePath` and `RelativePath` constructors accept `moonbitlang/core/path.Path` instead of `moonbitlang/x/path.Path`.
+The public `.path` fields return the standard-library type as well.
+Update the import in `moon.pkg` if you use the underlying `Path` directly.
+Calls to `from_string`, `join`, and the JSON conversion traits do not change.
+
 ## API
 
 [Mooncakes API reference](https://mooncakes.io/docs/totto2727/x/path)

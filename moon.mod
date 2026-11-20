@@ -1,10 +1,9 @@
 name = "totto2727/x"
 
-version = "0.10.0"
+version = "0.11.0"
 
 import {
   "Yoorkin/any@0.2.1",
-  "moonbitlang/x@0.5.1",
 }
 
 readme = "README.mbt.md"
