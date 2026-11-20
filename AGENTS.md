@@ -4,12 +4,10 @@
 
 ```text
 .github/workflows/  Validation and Mooncakes publishing workflows
+src/any_collection/  Typed heterogeneous maps, references, tests, and a package README
 src/copy/            Independent logical-copy trait, tests, and package README
-src/ring_buffer/     Fixed-capacity FIFO collection, tests, and package README
 src/json/            JSON flattening, reconstruction, path formats, and package README
 src/path/            Validated absolute and relative path values and package README
-src/toml/            Owned TOML-to-JSON conversion wrapper and package README
-src/yaml/            Owned YAML-to-JSON conversion wrapper and package README
 flake.nix            Nix development shell for MoonBit
 moon.mod             Module metadata and dependencies
 README.mbt.md        Physical module overview and canonical MoonBit README
@@ -44,16 +42,12 @@ README.md            Relative symlink to README.mbt.md
 ### Package boundaries
 
 - `copy` is independent of the serialization and path packages and defines explicit logical-copy behavior.
-- `ring_buffer` wraps the core deque behind fixed-capacity FIFO operations and logical-order access.
 - `path` wraps `moonbitlang/x/path.Path`, normalizes at construction, and preserves absolute or relative form through typed operations.
 - `json` owns path parsing plus bounded flattening and reconstruction over core `Json` values.
-- `yaml` and `toml` use owned wrapper types because MoonBit does not permit implementing a foreign trait for a foreign type.
 
 ### Error and conversion policy
 
 - JSON path parsing and reconstruction expose `FlattenJsonError`; do not replace typed failures with unchecked aborts.
-- YAML and TOML conversion reject or abort on non-finite values because JSON cannot represent them.
-- TOML date-time values flatten to strings and intentionally do not regain date-time variants when decoded from JSON.
 
 ### Public API documentation
 
@@ -72,7 +66,6 @@ README.md            Relative symlink to README.mbt.md
 
 - Preserve the `source = "./src"` package layout and import packages by their published subpaths.
 - Keep flattening limits, path formats, empty-container behavior, and conflict detection aligned between implementation, tests, and public doc comments.
-- Keep wrapper conversions explicit about lossy date-time handling, unsupported non-finite values, and JSON `null` behavior.
 - Update `moon.mod` and the lock file together when dependencies or package metadata change.
 - Run `moon fmt --check`, `moon check --deny-warn`, `moon build`, `moon test`, `moon package --list`, and the all-systems flake evaluation before handoff.
 
