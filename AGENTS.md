@@ -42,7 +42,7 @@ README.md            Relative symlink to README.mbt.md
 ### Package boundaries
 
 - `copy` is independent of the serialization and path packages and defines explicit logical-copy behavior.
-- `path` wraps `moonbitlang/x/path.Path`, normalizes at construction, and preserves absolute or relative form through typed operations.
+- `path` wraps `moonbitlang/core/path.Path`, normalizes at construction, and preserves absolute or relative form through typed operations.
 - `json` owns path parsing plus bounded flattening and reconstruction over core `Json` values.
 
 ### Error and conversion policy
